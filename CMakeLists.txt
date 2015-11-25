@@ -4,13 +4,11 @@ project (GP2BaseCode)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 list( APPEND CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} -ftest-coverage -fprofile-arcs")
 
-<<<<<<< HEAD
 set(CMAKE_PREFIX_PATH "C:/Users/Jordan Coyle/Documents/glew-1.12.0-win32/glew-1.12.0/include")
 set(CMAKE_LIBRARY_PATH "C:/Users/Jordan Coyle/Documents/glew-1.12.0-win32/glew-1.12.0/lib/Release/x64")
-=======
+
 set(CMAKE_PREFIX_PATH "O:/Users/Matthew/Documents/Uni Work/3rd Year/Games Programming 2/Lab Work/glew-1.12.0/include")
 set(CMAKE_LIBRARY_PATH "O:/Users/Matthew/Documents/Uni Work/3rd Year/Games Programming 2/Lab Work/glew-1.12.0/lib/Release/x64")
->>>>>>> refs/remotes/origin/master
 
 find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
@@ -36,3 +34,4 @@ endif (MSVC)
 add_custom_command(TARGET GP2BaseCode  PRE_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
                  ${CMAKE_SOURCE_DIR}/assets $<TARGET_FILE_DIR:GP2BaseCode>/assets)
+
