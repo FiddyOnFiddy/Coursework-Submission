@@ -298,15 +298,18 @@ int main(int argc, char * arg[])
 	while (run)
 	{
 		//While we still have events in the queue
-		while (SDL_PollEvent(&event)) {
+		while (SDL_PollEvent(&event))
+		{
 			//Get event type
-			if (event.type == SDL_QUIT || event.type == SDL_WINDOWEVENT_CLOSE) {
+			if (event.type == SDL_QUIT || event.type == SDL_WINDOWEVENT_CLOSE)
+			{
 				//set our boolean which controls the loop to false
 				run = false;
 			}
-			if (event.type == SDL_KEYDOWN){
+			if (event.type == SDL_KEYDOWN)
+			{
 				input->setInputEvent(event);
-				input->inputDetection();
+				input->inputDetection(camera);
 			}
 		}
 		//init Scene

@@ -15,7 +15,6 @@ Camera::Camera()
 	m_NearClip = 0.1f;
 	m_FarClip = 100.0f;
 }
-
 Camera::~Camera()
 {
 
@@ -23,7 +22,7 @@ Camera::~Camera()
 
 void Camera::moveForward()
 {
-	m_CameraPosition += m_CameraSpeed * m_CameraFront;
+	m_CameraPosition += (m_CameraSpeed * m_CameraFront);
 }
 
 void Camera::onUpdate()
