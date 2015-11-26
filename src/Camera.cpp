@@ -25,6 +25,21 @@ void Camera::moveForward()
 	m_CameraPosition += (m_CameraSpeed * m_CameraFront);
 }
 
+void Camera::moveBackward()
+{
+	m_CameraPosition -= m_CameraSpeed * m_CameraFront;
+}
+
+void Camera::moveRight()
+{
+	m_CameraPosition += normalize(cross(m_CameraFront, vec3(0.0f, 0.1f, 0.0f))) * m_CameraSpeed;
+}
+
+void Camera::moveLeft()
+{
+	m_CameraPosition -= normalize(cross(m_CameraFront, vec3(0.0f, 0.1f, 0.0f))) * m_CameraSpeed;
+}
+
 void Camera::onUpdate()
 {
 	m_CameraLook = m_CameraPosition + m_CameraFront;
