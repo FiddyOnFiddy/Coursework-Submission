@@ -17,6 +17,7 @@ shared_ptr<GameObject> gameObject = shared_ptr<GameObject>(new GameObject);
 vector <shared_ptr<GameObject>> gameObjects;
 shared_ptr<Camera> camera = shared_ptr<Camera>(new Camera);
 shared_ptr<Light> light = shared_ptr<Light>(new Light);
+shared_ptr<GameObject> skyBox = shared_ptr<GameObject>(new GameObject);
 
 //matrices
 mat4 MVPMatrix;
@@ -141,6 +142,10 @@ void createFramebuffer()
 
 void initScene()
 {
+	//Creating Skybox
+	
+
+
 
 	createFramebuffer();
 

@@ -12,6 +12,7 @@ public:
 	void loadShader(const string& vsFilename, const string& fsFilename);
 	void loadDiffuseMap(const string& filename);
 	void setUpUniforms();
+	void loadSkyBoxTextures(const string& skyBoxRight, const string& skyBoxLeft, const string& skyBoxTop, const string& skyBoxBottom, const string& skyBoxBack, const string& skyBoxFront);
 
 	GLuint getShaderProgram()
 	{
@@ -43,6 +44,11 @@ public:
 		return m_DiffuseMap;
 	};
 
+	GLuint getEnvironmentMap()
+	{
+		return m_EnvironmentMap;
+	};
+
 private:
 	GLuint m_ShaderProgram;
 
@@ -52,6 +58,7 @@ private:
 	float m_SpecularPower;
 
 	GLuint m_DiffuseMap;
+	GLuint m_EnvironmentMap;
 
 };
 #endif

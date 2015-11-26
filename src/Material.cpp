@@ -10,13 +10,16 @@ Material::Material()
 	m_DiffuseMaterial = vec4(0.6f, 0.6f, 0.6f, 1.0f);
 	m_SpecularMaterial = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	m_SpecularPower = 20.0f;
+
 	m_DiffuseMap = 0;
+	m_EnvironmentMap = 0;
 }
 
 Material::~Material()
 {
 	glDeleteProgram(m_ShaderProgram);
 	glDeleteTextures(1, &m_DiffuseMap);
+	glDeleteTextures(1, &m_EnvironmentMap);
 }
 
 void Material::loadShader(const string& vsFilename, const string& fsFilename)
@@ -69,3 +72,9 @@ void Material::setUpUniforms()
 	GLint specularPowerLocation = glGetUniformLocation(m_ShaderProgram, "specularPower");
 	glUniform1f(specularPowerLocation, m_SpecularPower);
 }
+
+void Material::loadSkyBoxTextures(const string& skyBoxRight, const string& skyBoxLeft, const string& skyBoxTop, const string& skyBoxBottom, const string& skyBoxBack, const string& skyBoxFront)
+{
+	m_EnvironmentMap = loadCubeTexture(skyBoxRight, skyBoxLeft, skyBoxTop, skyBoxBottom, skyBoxBack, skyBoxFront);
+}
+
