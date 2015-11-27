@@ -53,6 +53,9 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 	GLint MVPLocation = glGetUniformLocation(currentShaderProgram, "MVP");
 	glUniformMatrix4fv(MVPLocation, 1, GL_FALSE, value_ptr(MVPMatrix));
 
+	GLint ModelLocation = glGetUniformLocation(currentShaderProgram, "Model");
+	glUniformMatrix4fv(ModelLocation, 1, GL_FALSE, value_ptr(currentGameObject->getModelMatrix()));
+
 	glBindVertexArray(currentGameObject->getVertexArrayObject());
 
 	glDrawElements(GL_TRIANGLES, currentGameObject->getNumberOfIndices(), GL_UNSIGNED_INT, 0);
@@ -143,6 +146,7 @@ void createFramebuffer()
 void initScene()
 {
 	//Creating Skybox
+	skyBox->createBuffer(cubeVerts, numberOfCubeVerts, cubeIndices, numberOfCubeIndices);
 	
 
 
