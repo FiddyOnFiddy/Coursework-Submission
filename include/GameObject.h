@@ -110,6 +110,11 @@ public:
 		return m_Material->getDiffuseMap();
 	};
 
+	GLuint getEnvironmentMap()
+	{
+		return m_Material->getEnvironmentMap();
+	};
+
 private:
 	mat4 m_ModelMatrix;
 	vec3 m_Position;

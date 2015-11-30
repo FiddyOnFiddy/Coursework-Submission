@@ -56,6 +56,14 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 	GLint ModelLocation = glGetUniformLocation(currentShaderProgram, "Model");
 	glUniformMatrix4fv(ModelLocation, 1, GL_FALSE, value_ptr(currentGameObject->getModelMatrix()));
 
+	GLint CameraLocation = glGetUniformLocation(currentShaderProgram, "cameraPosition");
+	glUniformMatrix3fv(CameraLocation, 1, GL_FALSE, value_ptr(camera->getCameraPos()));
+
+	GLint cubeTextureLocation = glGetUniformLocation(currentShaderProgram, "cubeTexture");
+	//glActiveTexture(GL_TEXTURE1);
+	//glBindTexture(GL_TEXTURE_CUBE_MAP, gameObject->getEnvironmentMap());
+	glUniform1i(cubeTextureLocation, 1);
+
 	glBindVertexArray(currentGameObject->getVertexArrayObject());
 
 	glDrawElements(GL_TRIANGLES, currentGameObject->getNumberOfIndices(), GL_UNSIGNED_INT, 0);

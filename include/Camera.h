@@ -49,6 +49,11 @@ public:
 		return m_ProjMatrix;
 	};
 
+	vec3& getCameraPos()
+	{
+		return m_CameraPosition;
+	};
+
 private:
 
 	mat4 m_ViewMatrix;
