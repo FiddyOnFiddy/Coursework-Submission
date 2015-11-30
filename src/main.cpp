@@ -147,9 +147,19 @@ void initScene()
 {
 	//Creating Skybox
 	skyBox->createBuffer(cubeVerts, numberOfCubeVerts, cubeIndices, numberOfCubeIndices);
-	
+	string skyBoxFront = ASSET_PATH + TEXTURE_PATH + "/Skybox/iceflow_front.png";
+	string skyBoxBack = ASSET_PATH + TEXTURE_PATH + "/Skybox/iceflow_back.png";
+	string skyBoxLeft = ASSET_PATH + TEXTURE_PATH + "/Skybox/iceflow_left.png";
+	string skyBoxRight = ASSET_PATH + TEXTURE_PATH + "/Skybox/iceflow_right.png";
+	string skyBoxTop = ASSET_PATH + TEXTURE_PATH + "/Skybox/iceflow_top.png";
+	string skyBoxBottom = ASSET_PATH + TEXTURE_PATH + "/Skybox/iceflow_bottom.png";
+	skyBox->loadSkyBoxTextures(skyBoxRight, skyBoxLeft, skyBoxTop, skyBoxBottom, skyBoxBack, skyBoxFront);
 
+	string skyVS = ASSET_PATH + SHADER_PATH + "/skyVS.glsl";
+	string skyFS = ASSET_PATH + SHADER_PATH + "/skyFS.glsl";
+	skyBox->loadShader(skyVS, skyFS);
 
+	skyBox->update();
 
 	createFramebuffer();
 
@@ -220,6 +230,9 @@ void renderScene()
 
 	}
 
+	glDepthMask(GL_FALSE);
+	renderGameObject(skyBox);
+	glDepthMask(GL_TRUE);
 
 }
 
