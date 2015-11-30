@@ -21,6 +21,8 @@ GameObject::GameObject()
 GameObject::~GameObject()
 {
 	m_ChildGameObjects.clear();
+	m_Material->~Material();
+	m_Mesh->~Mesh();
 }
 
 void GameObject::update()
@@ -67,8 +69,8 @@ void GameObject::loadDiffuseMap(const string& filename)
 	m_Material->loadDiffuseMap(filename);
 }
 
-void GameObject::loadSkyBoxTextures(const string& skyBoxRight, const string& skyBoxLeft, const string& skyBoxTop, const string& skyBoxBottom, const string& skyBoxBack, const string& skyBoxFront)
+/*void GameObject::loadSkyBoxTextures(const string& skyBoxRight, const string& skyBoxLeft, const string& skyBoxTop, const string& skyBoxBottom, const string& skyBoxBack, const string& skyBoxFront)
 {
 	m_Material = shared_ptr<Material>(new Material);
 	m_Material->loadSkyBoxTextures(skyBoxRight, skyBoxLeft, skyBoxTop, skyBoxBottom, skyBoxBack, skyBoxFront);
-}
+}*/

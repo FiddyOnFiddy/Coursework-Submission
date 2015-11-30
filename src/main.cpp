@@ -17,7 +17,7 @@ shared_ptr<GameObject> gameObject = shared_ptr<GameObject>(new GameObject);
 vector <shared_ptr<GameObject>> gameObjects;
 shared_ptr<Camera> camera = shared_ptr<Camera>(new Camera);
 shared_ptr<Light> light = shared_ptr<Light>(new Light);
-shared_ptr<GameObject> skyBox = shared_ptr<GameObject>(new GameObject);
+shared_ptr<GameObject> skyBox;
 
 //matrices
 mat4 MVPMatrix;
@@ -60,8 +60,6 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 	glUniformMatrix3fv(CameraLocation, 1, GL_FALSE, value_ptr(camera->getCameraPos()));
 
 	GLint cubeTextureLocation = glGetUniformLocation(currentShaderProgram, "cubeTexture");
-	//glActiveTexture(GL_TEXTURE1);
-	//glBindTexture(GL_TEXTURE_CUBE_MAP, gameObject->getEnvironmentMap());
 	glUniform1i(cubeTextureLocation, 1);
 
 	glBindVertexArray(currentGameObject->getVertexArrayObject());
@@ -154,18 +152,24 @@ void createFramebuffer()
 void initScene()
 {
 	//Creating Skybox
-	skyBox->createBuffer(cubeVerts, numberOfCubeVerts, cubeIndices, numberOfCubeIndices);
+	shared_ptr<Mesh> skyBoxMesh = shared_ptr<Mesh>(new Mesh);
+	skyBoxMesh->create(cubeVerts, numberOfCubeVerts, cubeIndices, numberOfCubeIndices);
+
+	shared_ptr<Material> skyBoxMaterial = shared_ptr<Material>(new Material);
 	string skyBoxFront = ASSET_PATH + TEXTURE_PATH + "/Skybox/iceflow_front.png";
 	string skyBoxBack = ASSET_PATH + TEXTURE_PATH + "/Skybox/iceflow_back.png";
 	string skyBoxLeft = ASSET_PATH + TEXTURE_PATH + "/Skybox/iceflow_left.png";
 	string skyBoxRight = ASSET_PATH + TEXTURE_PATH + "/Skybox/iceflow_right.png";
 	string skyBoxTop = ASSET_PATH + TEXTURE_PATH + "/Skybox/iceflow_top.png";
 	string skyBoxBottom = ASSET_PATH + TEXTURE_PATH + "/Skybox/iceflow_bottom.png";
-	skyBox->loadSkyBoxTextures(skyBoxRight, skyBoxLeft, skyBoxTop, skyBoxBottom, skyBoxBack, skyBoxFront);
+	//skyBoxMaterial->loadSkyBoxTextures(skyBoxRight, skyBoxLeft, skyBoxTop, skyBoxBottom, skyBoxBack, skyBoxFront);
 
 	string skyVS = ASSET_PATH + SHADER_PATH + "/skyVS.glsl";
 	string skyFS = ASSET_PATH + SHADER_PATH + "/skyFS.glsl";
-	skyBox->loadShader(skyVS, skyFS);
+	skyBoxMaterial->loadShader(skyVS, skyFS);
+	skyBox = shared_ptr<GameObject>(new GameObject);
+	skyBox->setMesh(skyBoxMesh);
+	skyBox->setMaterial(skyBoxMaterial);
 
 	skyBox->update();
 
