@@ -20,7 +20,6 @@ public:
 	void loadDiffuseMap(const string& filename);
 	void setUpGameObjectMaterial();
 	void createBuffer(Vertex * pVerts, int numVerts, int *pindices, int numIndices);
-	//void loadSkyBoxTextures(const string& skyBoxRight, const string& skyBoxLeft, const string& skyBoxTop, const string& skyBoxBottom, const string& skyBoxBack, const string& skyBoxFront);
 
 	GLuint getVertexArrayObject()
 	{
@@ -110,16 +109,20 @@ public:
 		return m_Material->getDiffuseMap();
 	};
 
-	/*GLuint getEnvironmentMap()
+	GLuint getEnvironmentMap()
 	{
 		return m_Material->getEnvironmentMap();
-	};*/
+	};
 
 	void setMaterial(shared_ptr<Material> material)
 	{
 		m_Material = material;
 	};
 
+	shared_ptr<Material> getMaterial()
+	{
+		return m_Material;
+	}
 	void setMesh(shared_ptr<Mesh> mesh)
 	{
 		m_Mesh = mesh;

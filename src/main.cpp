@@ -38,6 +38,8 @@ GLuint currentShaderProgram = 0;
 void renderGameObject(shared_ptr<GameObject> currentGameObject)
 {
 
+	shared_ptr<Material> matTemp = currentGameObject->getMaterial();
+
 	MVPMatrix = camera->getProjMatrix() * camera->getViewMatrix() * currentGameObject->getModelMatrix();
 
 	if (currentGameObject->getShaderProgram() > 0)
@@ -59,6 +61,14 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 	GLint CameraLocation = glGetUniformLocation(currentShaderProgram, "cameraPosition");
 	glUniformMatrix3fv(CameraLocation, 1, GL_FALSE, value_ptr(camera->getCameraPos()));
 
+	
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, currentGameObject->getDiffuseMap());
+	GLint texture0Location = glGetUniformLocation(currentShaderProgram, "texture0");
+	glUniform1i(texture0Location, 0);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, matTemp->getEnvironmentMap());
 	GLint cubeTextureLocation = glGetUniformLocation(currentShaderProgram, "cubeTexture");
 	glUniform1i(cubeTextureLocation, 1);
 
@@ -156,13 +166,13 @@ void initScene()
 	skyBoxMesh->create(cubeVerts, numberOfCubeVerts, cubeIndices, numberOfCubeIndices);
 
 	shared_ptr<Material> skyBoxMaterial = shared_ptr<Material>(new Material);
-	string skyBoxFront = ASSET_PATH + TEXTURE_PATH + "/Skybox/iceflow_front.png";
-	string skyBoxBack = ASSET_PATH + TEXTURE_PATH + "/Skybox/iceflow_back.png";
-	string skyBoxLeft = ASSET_PATH + TEXTURE_PATH + "/Skybox/iceflow_left.png";
-	string skyBoxRight = ASSET_PATH + TEXTURE_PATH + "/Skybox/iceflow_right.png";
-	string skyBoxTop = ASSET_PATH + TEXTURE_PATH + "/Skybox/iceflow_top.png";
-	string skyBoxBottom = ASSET_PATH + TEXTURE_PATH + "/Skybox/iceflow_bottom.png";
-	//skyBoxMaterial->loadSkyBoxTextures(skyBoxRight, skyBoxLeft, skyBoxTop, skyBoxBottom, skyBoxBack, skyBoxFront);
+	string skyBoxFront = ASSET_PATH + TEXTURE_PATH + "/Skybox/zneg.png";
+	string skyBoxBack = ASSET_PATH + TEXTURE_PATH + "/Skybox/zpos.png";
+	string skyBoxLeft = ASSET_PATH + TEXTURE_PATH + "/Skybox/xneg.png";
+	string skyBoxRight = ASSET_PATH + TEXTURE_PATH + "/Skybox/xpos.png";
+	string skyBoxTop = ASSET_PATH + TEXTURE_PATH + "/Skybox/ypos.png";
+	string skyBoxBottom = ASSET_PATH + TEXTURE_PATH + "/Skybox/yneg.png";
+	skyBoxMaterial->loadSkyBoxTextures(skyBoxRight, skyBoxLeft, skyBoxTop, skyBoxBottom, skyBoxBack, skyBoxFront);
 
 	string skyVS = ASSET_PATH + SHADER_PATH + "/skyVS.glsl";
 	string skyFS = ASSET_PATH + SHADER_PATH + "/skyFS.glsl";
@@ -178,11 +188,13 @@ void initScene()
 	//Object 1 - Teapot
 	string modelPath = ASSET_PATH + MODEL_PATH + "/utah-teapot.fbx";
 	gameObject = loadFBXFromFile(modelPath);
-	string vsPath = ASSET_PATH + SHADER_PATH + "/simpleVS.glsl";
-	string fsPath = ASSET_PATH + SHADER_PATH + "/simpleFS.glsl";
+	string vsPath = ASSET_PATH + SHADER_PATH + "/textureVS.glsl";
+	string fsPath = ASSET_PATH + SHADER_PATH + "/textureFS.glsl";
 	gameObject->loadShader(vsPath, fsPath);
 	gameObject->setPosition(vec3(10.0, 50.0, 0.0f));
 	gameObject->setScale(vec3(0.1f, 0.1f, 0.1f));
+	string texturePath = ASSET_PATH + TEXTURE_PATH + "/texture.png";
+	gameObject->loadDiffuseMap(texturePath);
 	gameObjects.push_back(gameObject);
 
 	//Object 2 - Armored Car

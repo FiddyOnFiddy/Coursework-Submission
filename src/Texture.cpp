@@ -145,8 +145,8 @@ GLuint  loadCubeTexture(const string& skyBoxRight, const string& skyBoxLeft, con
 	loadCubeMapFace(skyBoxLeft, GL_TEXTURE_CUBE_MAP_NEGATIVE_X);
 	loadCubeMapFace(skyBoxTop, GL_TEXTURE_CUBE_MAP_POSITIVE_Y);
 	loadCubeMapFace(skyBoxBottom, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y);
-	loadCubeMapFace(skyBoxFront, GL_TEXTURE_CUBE_MAP_POSITIVE_Z);
-	loadCubeMapFace(skyBoxBack, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z);
+	loadCubeMapFace(skyBoxBack, GL_TEXTURE_CUBE_MAP_POSITIVE_Z);
+	loadCubeMapFace(skyBoxFront, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z);
 
 	return cubeTextureID;
 }
