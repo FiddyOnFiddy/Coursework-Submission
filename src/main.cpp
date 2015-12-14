@@ -33,6 +33,7 @@ const int FRAME_BUFFER_WIDTH = 640;
 const int FRAME_BUFFER_HEIGHT = 480;
 
 GLuint currentShaderProgram = 0;
+GLuint currentDiffuseMap = 0;
 
 
 void renderGameObject(shared_ptr<GameObject> currentGameObject)
@@ -53,24 +54,32 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 
 
 	GLint MVPLocation = glGetUniformLocation(currentShaderProgram, "MVP");
-	glUniformMatrix4fv(MVPLocation, 1, GL_FALSE, value_ptr(MVPMatrix));
 
 	GLint ModelLocation = glGetUniformLocation(currentShaderProgram, "Model");
-	glUniformMatrix4fv(ModelLocation, 1, GL_FALSE, value_ptr(currentGameObject->getModelMatrix()));
 
 	GLint CameraLocation = glGetUniformLocation(currentShaderProgram, "cameraPosition");
-	glUniformMatrix3fv(CameraLocation, 1, GL_FALSE, value_ptr(camera->getCameraPos()));
 
+	GLint texture0Location = glGetUniformLocation(currentShaderProgram, "texture0");
+	
+	GLint cubeTextureLocation = glGetUniformLocation(currentShaderProgram, "cubeTexture");
+
+	if (currentGameObject->getDiffuseMap() > 0)
+	{
+		currentDiffuseMap = gameObject->getDiffuseMap();
+	}
 	
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, currentGameObject->getDiffuseMap());
-	GLint texture0Location = glGetUniformLocation(currentShaderProgram, "texture0");
-	glUniform1i(texture0Location, 0);
 
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, matTemp->getEnvironmentMap());
-	GLint cubeTextureLocation = glGetUniformLocation(currentShaderProgram, "cubeTexture");
 	glUniform1i(cubeTextureLocation, 1);
+
+	glUniformMatrix3fv(CameraLocation, 1, GL_FALSE, value_ptr(camera->getCameraPos()));
+	glUniformMatrix4fv(ModelLocation, 1, GL_FALSE, value_ptr(currentGameObject->getModelMatrix()));
+	glUniformMatrix4fv(MVPLocation, 1, GL_FALSE, value_ptr(MVPMatrix));
+	glUniform1i(texture0Location, 0);
+
 
 	glBindVertexArray(currentGameObject->getVertexArrayObject());
 
@@ -166,12 +175,12 @@ void initScene()
 	skyBoxMesh->create(cubeVerts, numberOfCubeVerts, cubeIndices, numberOfCubeIndices);
 
 	shared_ptr<Material> skyBoxMaterial = shared_ptr<Material>(new Material);
-	string skyBoxFront = ASSET_PATH + TEXTURE_PATH + "/Skybox/zneg.png";
-	string skyBoxBack = ASSET_PATH + TEXTURE_PATH + "/Skybox/zpos.png";
-	string skyBoxLeft = ASSET_PATH + TEXTURE_PATH + "/Skybox/xneg.png";
-	string skyBoxRight = ASSET_PATH + TEXTURE_PATH + "/Skybox/xpos.png";
-	string skyBoxTop = ASSET_PATH + TEXTURE_PATH + "/Skybox/ypos.png";
-	string skyBoxBottom = ASSET_PATH + TEXTURE_PATH + "/Skybox/yneg.png";
+	string skyBoxFront = ASSET_PATH + TEXTURE_PATH + "/Skybox/TropicalSunnyDayFront2048.png";
+	string skyBoxBack = ASSET_PATH + TEXTURE_PATH + "/Skybox/TropicalSunnyDayBack2048.png";
+	string skyBoxLeft = ASSET_PATH + TEXTURE_PATH + "/Skybox/TropicalSunnyDayLeft2048.png";
+	string skyBoxRight = ASSET_PATH + TEXTURE_PATH + "/Skybox/TropicalSunnyDayRight2048.png";
+	string skyBoxTop = ASSET_PATH + TEXTURE_PATH + "/Skybox/TropicalSunnyDayUp2048.png";
+	string skyBoxBottom = ASSET_PATH + TEXTURE_PATH + "/Skybox/TropicalSunnyDayDown2048.png";
 	skyBoxMaterial->loadSkyBoxTextures(skyBoxRight, skyBoxLeft, skyBoxTop, skyBoxBottom, skyBoxBack, skyBoxFront);
 
 	string skyVS = ASSET_PATH + SHADER_PATH + "/skyVS.glsl";
@@ -187,24 +196,27 @@ void initScene()
 
 	//Object 1 - Teapot
 	string modelPath = ASSET_PATH + MODEL_PATH + "/utah-teapot.fbx";
-	gameObject = loadFBXFromFile(modelPath);
-	string vsPath = ASSET_PATH + SHADER_PATH + "/textureVS.glsl";
-	string fsPath = ASSET_PATH + SHADER_PATH + "/textureFS.glsl";
-	gameObject->loadShader(vsPath, fsPath);
+	shared_ptr<GameObject> teapot = loadFBXFromFile(modelPath);
 	gameObject->setPosition(vec3(10.0, 50.0, 0.0f));
 	gameObject->setScale(vec3(0.1f, 0.1f, 0.1f));
-	string texturePath = ASSET_PATH + TEXTURE_PATH + "/texture.png";
-	gameObject->loadDiffuseMap(texturePath);
-	gameObjects.push_back(gameObject);
+	shared_ptr<Material> teapotMaterial = shared_ptr<Material>(new Material);
+	string vsPath = ASSET_PATH + SHADER_PATH + "/specularReflectionsVS.glsl";
+	string fsPath = ASSET_PATH + SHADER_PATH + "/specularReflectionsFS.glsl";
+	teapotMaterial->loadShader(vsPath, fsPath);
+	teapotMaterial->loadSkyBoxTextures(skyBoxRight, skyBoxLeft, skyBoxTop, skyBoxBottom, skyBoxBack, skyBoxFront);
+	teapot->setMaterial(teapotMaterial);
+	gameObjects.push_back(teapot);
+
+
 
 	//Object 2 - Armored Car
-	modelPath = ASSET_PATH + MODEL_PATH + "/armoredrecon.fbx";
+	/*modelPath = ASSET_PATH + MODEL_PATH + "/armoredrecon.fbx";
 	gameObject = loadFBXFromFile(modelPath);
 	vsPath = ASSET_PATH + SHADER_PATH + "/specularVS.glsl";
 	fsPath = ASSET_PATH + SHADER_PATH + "/specularFS.glsl";
 	gameObject->loadShader(vsPath, fsPath);
 	gameObject->setPosition(vec3(0.0f, 0.0f, 0.0f));
-	gameObjects.push_back(gameObject);
+	gameObjects.push_back(gameObject);*/
 
 }
 

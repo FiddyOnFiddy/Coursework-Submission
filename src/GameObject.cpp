@@ -54,7 +54,6 @@ void GameObject::createBuffer(Vertex *pVerts, int numVerts, int *pIndices, int n
 
 void GameObject::loadShader(const string& vsFilename, const string& fsFilename)
 {
-	m_Material = shared_ptr<Material>(new Material);
 	m_Material->loadShader(vsFilename, fsFilename);
 }
 
@@ -65,6 +64,5 @@ void GameObject::setUpGameObjectMaterial()
 
 void GameObject::loadDiffuseMap(const string& filename)
 {
-	m_Material = shared_ptr<Material>(new Material);
 	m_Material->loadDiffuseMap(filename);
 }
