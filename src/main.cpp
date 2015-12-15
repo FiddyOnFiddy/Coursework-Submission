@@ -197,26 +197,27 @@ void initScene()
 	//Object 1 - Teapot
 	string modelPath = ASSET_PATH + MODEL_PATH + "/utah-teapot.fbx";
 	shared_ptr<GameObject> teapot = loadFBXFromFile(modelPath);
-	gameObject->setPosition(vec3(10.0, 50.0, 0.0f));
-	gameObject->setScale(vec3(0.1f, 0.1f, 0.1f));
+	teapot->setPosition(vec3(10.0, 50.0, 0.0f));
+	teapot->setScale(vec3(0.1f, 0.1f, 0.1f));
 	shared_ptr<Material> teapotMaterial = shared_ptr<Material>(new Material);
-	string vsPath = ASSET_PATH + SHADER_PATH + "/specularReflectionsVS.glsl";
-	string fsPath = ASSET_PATH + SHADER_PATH + "/specularReflectionsFS.glsl";
+	string vsPath = ASSET_PATH + SHADER_PATH + "/textureVS.glsl";
+	string fsPath = ASSET_PATH + SHADER_PATH + "/textureFS.glsl";
+	string texturePath = ASSET_PATH + TEXTURE_PATH + "/texture.png";
 	teapotMaterial->loadShader(vsPath, fsPath);
-	teapotMaterial->loadSkyBoxTextures(skyBoxRight, skyBoxLeft, skyBoxTop, skyBoxBottom, skyBoxBack, skyBoxFront);
+	teapotMaterial->loadDiffuseMap(texturePath);
 	teapot->setMaterial(teapotMaterial);
 	gameObjects.push_back(teapot);
 
 
 
 	//Object 2 - Armored Car
-	/*modelPath = ASSET_PATH + MODEL_PATH + "/armoredrecon.fbx";
+	modelPath = ASSET_PATH + MODEL_PATH + "/armoredrecon.fbx";
 	gameObject = loadFBXFromFile(modelPath);
 	vsPath = ASSET_PATH + SHADER_PATH + "/specularVS.glsl";
 	fsPath = ASSET_PATH + SHADER_PATH + "/specularFS.glsl";
 	gameObject->loadShader(vsPath, fsPath);
 	gameObject->setPosition(vec3(0.0f, 0.0f, 0.0f));
-	gameObjects.push_back(gameObject);*/
+	gameObjects.push_back(gameObject);
 
 }
 

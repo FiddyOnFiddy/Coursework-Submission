@@ -129,8 +129,9 @@ void loadCubeMapFace(const string& filename, GLenum face)
 GLuint  loadCubeTexture(const string& skyBoxRight, const string& skyBoxLeft, const string& skyBoxTop, const string& skyBoxBottom, const string& skyBoxBack, const string& skyBoxFront)
 {
 	GLuint cubeTextureID;
-	glActiveTexture(GL_TEXTURE1);
 	glGenTextures(1, &cubeTextureID);
+	glActiveTexture(GL_TEXTURE1);
+
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubeTextureID);
 
