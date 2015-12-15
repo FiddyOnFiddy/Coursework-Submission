@@ -31,6 +31,10 @@ void Input::inputDetection(shared_ptr<Camera> camera)
 		camera->moveBackward();
 		cout << "down" << endl;
 		break;
+	case SDLK_c:
+		camera->setCamPos(vec3(5.0f, 5.0f, 5.0f));
+		camera->setCamLook(vec3(0.0f, 0.0f, 0.0f));
+		cout << "Camera Change" << endl;
 	default:
 		break;
 	}

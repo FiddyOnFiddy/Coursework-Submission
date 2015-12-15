@@ -16,6 +16,7 @@
 shared_ptr<GameObject> gameObject = shared_ptr<GameObject>(new GameObject);
 vector <shared_ptr<GameObject>> gameObjects;
 shared_ptr<Camera> camera = shared_ptr<Camera>(new Camera);
+shared_ptr<Camera> cameraDebug = shared_ptr<Camera>(new Camera);
 shared_ptr<Light> light = shared_ptr<Light>(new Light);
 shared_ptr<Input> input = shared_ptr<Input>(new Input);
 

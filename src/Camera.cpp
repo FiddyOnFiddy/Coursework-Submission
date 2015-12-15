@@ -6,7 +6,7 @@ Camera::Camera()
 {
 	m_ViewMatrix = mat4(1.0f);
 	m_ProjMatrix = mat4(1.0f);
-	m_CameraPosition = vec3(0.0f, 0.0f, 1.0f);
+	m_CameraPosition = vec3(0.0f, 0.0f, 10.0f);
 	m_CameraFront = vec3(0.0f, 0.0f, -1.0f);
 	m_CameraLook = vec3(0.0f, 0.0f, 0.0f);
 	m_CameraSpeed = 0.03f;
