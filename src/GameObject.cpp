@@ -21,8 +21,8 @@ GameObject::GameObject()
 GameObject::~GameObject()
 {
 	m_ChildGameObjects.clear();
-	//m_Material->~Material();
-	//m_Mesh->~Mesh();
+	m_Material->~Material();
+	m_Mesh->~Mesh();
 }
 
 void GameObject::update()
