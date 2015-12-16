@@ -49,6 +49,26 @@ public:
 		return m_EnvironmentMap;
 	};
 
+	void setAmbientMaterial(vec4& ambientMatieal)
+	{
+		m_AmbientMaterial = ambientMatieal;
+	};
+
+	void setDiffuseMaterial(vec4& diffuseMaterial)
+	{
+		m_DiffuseMaterial = diffuseMaterial;
+	};
+
+	void setSpecularMaterial(vec4& specularMaterial)
+	{
+		m_SpecularMaterial = specularMaterial;
+	};
+
+	void setSpecularPower(float specularPower)
+	{
+		m_SpecularPower = specularPower;
+	};
+
 private:
 	GLuint m_ShaderProgram;
 
