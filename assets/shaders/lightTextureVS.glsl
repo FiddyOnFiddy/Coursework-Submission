@@ -18,5 +18,5 @@ void main()
 
 	worldPos = Model * vec4(vertexPosition, 1);
 	worldSurfaceNormal = Model* vec4(vertexNormal, 0);
-	vertexTexCoordsOut2 = vertexTexCoordsOut
+	vertexTexCoordsOut2 = vertexTexCoordsOut;
 }

@@ -60,14 +60,21 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 	currentGameObject->setUpGameObjectMaterial();
 
 	GLint MVPLocation = glGetUniformLocation(currentShaderProgram, "MVP");
-
 	GLint ModelLocation = glGetUniformLocation(currentShaderProgram, "Model");
-
 	GLint CameraLocation = glGetUniformLocation(currentShaderProgram, "cameraPosition");
-
 	GLint texture0Location = glGetUniformLocation(currentShaderProgram, "texture0");
-	
 	GLint cubeTextureLocation = glGetUniformLocation(currentShaderProgram, "cubeTexture");
+
+	GLint EyePosWLocation = glGetUniformLocation(currentShaderProgram, "EyePosW");
+	GLint LightPosWLocation = glGetUniformLocation(currentShaderProgram, "LightPosW");
+	GLint LightColorLocation = glGetUniformLocation(currentShaderProgram, "LightColor");
+	GLint MaterialEmissiveLocation = glGetUniformLocation(currentShaderProgram, "MaterialEmissive");
+	GLint MaterialDiffuseLocation = glGetUniformLocation(currentShaderProgram, "MaterialDiffuse");
+	GLint MaterialSpecularLocation = glGetUniformLocation(currentShaderProgram, "MaterialSpecular");
+	GLint MaterialShininessLocation = glGetUniformLocation(currentShaderProgram, "MaterialShininess");
+	GLint AmbientLocation = glGetUniformLocation(currentShaderProgram, "Ambient");
+
+	
 
 	if (currentGameObject->getDiffuseMap() > 0)
 	{
@@ -86,7 +93,14 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 	glUniform1i(texture0Location, 0);
 	glUniform1i(cubeTextureLocation, 1);
 
-
+	glUniform4fv(LightPosWLocation, 1, value_ptr(camera->getCameraPos()));
+	glUniform4fv(LightColorLocation, 1, value_ptr(light->getSpecularLightColour()));
+	glUniform4fv(AmbientLocation, 1, value_ptr(light->getAmbientLightColour()));
+	glUniform4fv(EyePosWLocation, 1, value_ptr(camera->getCameraPos()));
+	glUniform4fv(MaterialEmissiveLocation, 1, value_ptr(vec4(0.0f)));
+	glUniform4fv(MaterialDiffuseLocation, 1, value_ptr(vec4(1.0f)));
+	glUniform4fv(MaterialSpecularLocation, 1, value_ptr(vec4(1.0f)));
+	glUniform1f(MaterialShininessLocation, 50.0f);
 
 	glBindVertexArray(currentGameObject->getVertexArrayObject());
 
@@ -99,7 +113,7 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 
 }
 
-void createFramebuffer()
+/*void createFramebuffer()
 {
 	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(1, &FBOTexture);
@@ -176,7 +190,7 @@ void createFramebuffer()
 	//now we can delete the VS & FS Programs
 	glDeleteShader(vertexShaderProgram);
 	glDeleteShader(fragmentShaderProgram);
-}
+}*/
 
 void initScene()
 {
@@ -205,7 +219,7 @@ void initScene()
 
 	skyBox->update();
 
-	createFramebuffer();
+	//createFramebuffer();
 
 	//Object 1 - Teapot
 	string modelPath = ASSET_PATH + MODEL_PATH + "/utah-teapot.fbx";
@@ -213,11 +227,11 @@ void initScene()
 	teapot->setPosition(vec3(10.0, 50.0, 0.0f));
 	teapot->setScale(vec3(0.1f, 0.1f, 0.1f));
 	shared_ptr<Material> teapotMaterial = shared_ptr<Material>(new Material);
-	string vsPath = ASSET_PATH + SHADER_PATH + "/textureVS.glsl";
-	string fsPath = ASSET_PATH + SHADER_PATH + "/textureFS.glsl";
+	string vsPath = ASSET_PATH + SHADER_PATH + "/lightTextureFS.glsl";
+	string fsPath = ASSET_PATH + SHADER_PATH + "/lightTextureVS.glsl";
 	string texturePath = ASSET_PATH + TEXTURE_PATH + "/texture.png";
 	teapotMaterial->loadShader(vsPath, fsPath);
-	//teapotMaterial->loadDiffuseMap(texturePath);
+	teapotMaterial->loadDiffuseMap(texturePath);
 	teapot->setMaterial(teapotMaterial);
 	gameObjects.push_back(teapot);
 
@@ -232,7 +246,7 @@ void initScene()
 
 }
 
-void cleanUpFramebuffer()
+/*void cleanUpFramebuffer()
 {
 	glDeleteProgram(fullScreenShaderProgram);
 	glDeleteBuffers(1, &fullScreenVBO);
@@ -240,11 +254,11 @@ void cleanUpFramebuffer()
 	glDeleteFramebuffers(1, &frameBufferObject);
 	glDeleteRenderbuffers(1, &FBODepthBuffer);
 	glDeleteTextures(1, &FBOTexture);
-}
+}*/
 
 void cleanUp()
 {
-	cleanUpFramebuffer();
+	//cleanUpFramebuffer();
 	gameObjects.clear();
 	gameObject->~GameObject();
 	camera -> ~Camera();
@@ -290,7 +304,7 @@ void renderScene()
 
 }
 
-void renderPostProcessing()
+/*void renderPostProcessing()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	//Set the clear colour(background)
@@ -315,12 +329,12 @@ void renderPostProcessing()
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-}
+}*/
 
 void render()
 {
 	renderScene();
-	renderPostProcessing();
+	//renderPostProcessing();
 }
 
 int main(int argc, char * arg[])
