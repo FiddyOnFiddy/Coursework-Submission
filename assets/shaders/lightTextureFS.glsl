@@ -16,7 +16,7 @@ uniform float MaterialShininess;
 
 uniform vec4 Ambient;
 
-uniform sampler2D texture0
+uniform sampler2D texture0;
 
 out vec4 FragColor;
 
@@ -39,7 +39,7 @@ void main()
     float NdotH = max( dot( N, H ), 0 );
     vec4 Specular = pow( RdotV, MaterialShininess ) * LightColor * MaterialSpecular;
     
-    out_color = ( Emissive + Ambient + Diffuse + Specular ) * texture( diffuseSampler, vertexTexCoordsOut2);
+    FragColor = ( Emissive + Ambient + Diffuse + Specular ) * texture( texture0, vertexTexCoordsOut2);
 }
 
 

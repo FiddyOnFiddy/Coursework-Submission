@@ -53,7 +53,7 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 	if (currentGameObject->getShaderProgram() > 0)
 	{
 		currentShaderProgram = currentGameObject->getShaderProgram();
-		
+
 	}
 	glUseProgram(currentShaderProgram);
 	light->setUpLight(currentShaderProgram);
@@ -73,13 +73,6 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 	GLint MaterialSpecularLocation = glGetUniformLocation(currentShaderProgram, "MaterialSpecular");
 	GLint MaterialShininessLocation = glGetUniformLocation(currentShaderProgram, "MaterialShininess");
 	GLint AmbientLocation = glGetUniformLocation(currentShaderProgram, "Ambient");
-
-	
-
-	if (currentGameObject->getDiffuseMap() > 0)
-	{
-		currentDiffuseMap = gameObject->getDiffuseMap();
-	}
 
 	if (matTemp->getDiffuseMap()>0)
 		currentDiffuseMap = matTemp->getDiffuseMap();
@@ -103,13 +96,10 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 	glUniform4fv(MaterialEmissiveLocation, 1, value_ptr(vec4(0.0f)));
 	glUniform4fv(MaterialDiffuseLocation, 1, value_ptr(vec4(1.0f)));
 	glUniform4fv(MaterialSpecularLocation, 1, value_ptr(vec4(1.0f)));
-	glUniform1f(MaterialShininessLocation, 50.0f);
+	glUniform1f(MaterialShininessLocation, 10.0f);
 
-	glBindVertexArray(currentGameObject->getVertexArrayObject());
-
-	glDrawElements(GL_TRIANGLES, currentGameObject->getNumberOfIndices(), GL_UNSIGNED_INT, 0);
-
-	if (currentGameObject->getVertexArrayObject() > 0){
+	if (currentGameObject->getVertexArrayObject() > 0)
+	{
 		glBindVertexArray(currentGameObject->getVertexArrayObject());
 		glDrawElements(GL_TRIANGLES, currentGameObject->getNumberOfIndices(), GL_UNSIGNED_INT, 0);
 	}
@@ -235,8 +225,8 @@ void initScene()
 	teapot->setPosition(vec3(10.0, 50.0, 0.0f));
 	teapot->setScale(vec3(0.1f, 0.1f, 0.1f));
 	shared_ptr<Material> teapotMaterial = shared_ptr<Material>(new Material);
-	string vsPath = ASSET_PATH + SHADER_PATH + "/lightTextureFS.glsl";
-	string fsPath = ASSET_PATH + SHADER_PATH + "/lightTextureVS.glsl";
+	string vsPath = ASSET_PATH + SHADER_PATH + "/lightTextureVS.glsl";
+	string fsPath = ASSET_PATH + SHADER_PATH + "/lightTextureFS.glsl";
 	string texturePath = ASSET_PATH + TEXTURE_PATH + "/texture.png";
 	teapotMaterial->loadShader(vsPath, fsPath);
 	teapotMaterial->loadDiffuseMap(texturePath);
@@ -246,9 +236,10 @@ void initScene()
 	//Object 2 - Armored Car
 	modelPath = ASSET_PATH + MODEL_PATH + "/armoredrecon.fbx";
 	gameObject = loadFBXFromFile(modelPath);
-	vsPath = ASSET_PATH + SHADER_PATH + "/specularVS.glsl";
-	fsPath = ASSET_PATH + SHADER_PATH + "/specularFS.glsl";
+	vsPath = ASSET_PATH + SHADER_PATH + "/lightTextureVS.glsl";
+	fsPath = ASSET_PATH + SHADER_PATH + "/lightTextureFS.glsl";
 	gameObject->loadShader(vsPath, fsPath);
+	gameObject->loadDiffuseMap(texturePath);
 	gameObject->setPosition(vec3(0.0f, 0.0f, 0.0f));
 	gameObjects.push_back(gameObject);
 
