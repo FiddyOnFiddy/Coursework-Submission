@@ -41,6 +41,8 @@ void Material::loadShader(const string& vsFilename, const string& fsFilename)
 	glBindAttribLocation(m_ShaderProgram, 1, "vertexColour");
 	glBindAttribLocation(m_ShaderProgram, 2, "vertexTexCoords");
 	glBindAttribLocation(m_ShaderProgram, 3, "vertexNormal");
+	glBindAttribLocation(m_ShaderProgram, 4, "vertexTexCoords2");
+
 
 	glLinkProgram(m_ShaderProgram);
 	checkForLinkErrors(m_ShaderProgram);

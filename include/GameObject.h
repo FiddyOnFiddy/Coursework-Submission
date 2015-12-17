@@ -123,6 +123,12 @@ public:
 	{
 		return m_Material;
 	}
+
+	vec3& getPosition()
+	{
+		return m_Position;
+	}
+
 	void setMesh(shared_ptr<Mesh> mesh)
 	{
 		m_Mesh = mesh;

@@ -2,7 +2,7 @@
 
 in vec4 worldPos;
 in vec4 worldSurfaceNormal;
-in vec2 vertexTexCoordsOut2;
+in vec2 vertexTexCoords2;
 
 uniform vec4 EyePosW;
 uniform vec4 LightPosW;
@@ -39,7 +39,7 @@ void main()
     float NdotH = max( dot( N, H ), 0 );
     vec4 Specular = pow( RdotV, MaterialShininess ) * LightColor * MaterialSpecular;
     
-    FragColor = ( Emissive + Ambient + Diffuse + Specular ) * texture( texture0, vertexTexCoordsOut2);
+    FragColor = ( Emissive + Ambient + Diffuse + Specular ) * texture( texture0, vertexTexCoords2);
 }
 
 

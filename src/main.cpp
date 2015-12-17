@@ -96,7 +96,7 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 	glUniform4fv(MaterialEmissiveLocation, 1, value_ptr(vec4(0.0f)));
 	glUniform4fv(MaterialDiffuseLocation, 1, value_ptr(vec4(1.0f)));
 	glUniform4fv(MaterialSpecularLocation, 1, value_ptr(vec4(1.0f)));
-	glUniform1f(MaterialShininessLocation, 10.0f);
+	glUniform1f(MaterialShininessLocation, 50.0f);
 
 	if (currentGameObject->getVertexArrayObject() > 0)
 	{
@@ -213,6 +213,7 @@ void initScene()
 	skyBoxMaterial->loadShader(skyVS, skyFS);
 	skyBox = shared_ptr<GameObject>(new GameObject);
 	skyBox->setMesh(skyBoxMesh);
+	
 	skyBox->setMaterial(skyBoxMaterial);
 
 	skyBox->update();

@@ -2,11 +2,11 @@
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
-in vec2 vertexTexCoordsOut;
+in vec2 vertexTexCoords;
 
 out vec4 worldPos;
 out vec4 worldSurfaceNormal;
-out vec2 vertexTexCoordsOut2;
+out vec2 vertexTexCoords2;
 
 
 uniform mat4 MVP;
@@ -16,7 +16,7 @@ void main()
 {
   	gl_Position = MVP * vec4(vertexPosition, 1.0);
 
-	worldPos = Model * vec4(vertexPosition, 1);
+	worldPos = Model * vec4(vertexPosition, 1.0);
 	worldSurfaceNormal = Model* vec4(vertexNormal, 0);
-	vertexTexCoordsOut2 = vertexTexCoordsOut;
+	vertexTexCoords2= vertexTexCoords;
 }
