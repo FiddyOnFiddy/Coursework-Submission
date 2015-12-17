@@ -7,9 +7,9 @@ Material::Material()
 	m_ShaderProgram = 0;
 
 	m_AmbientMaterial = vec4(0.3f, 0.3f, 0.3f, 1.0f);
-	m_DiffuseMaterial = vec4(0.8f, 0.8f, 0.8f, 1.0f);
+	m_DiffuseMaterial = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	m_SpecularMaterial = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	m_SpecularPower = 5.0f;
+	m_SpecularPower = 10.0f;
 
 	m_DiffuseMap = 0;
 	m_EnvironmentMap = 0;

@@ -73,6 +73,7 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 	GLint MaterialSpecularLocation = glGetUniformLocation(currentShaderProgram, "MaterialSpecular");
 	GLint MaterialShininessLocation = glGetUniformLocation(currentShaderProgram, "MaterialShininess");
 	GLint AmbientLocation = glGetUniformLocation(currentShaderProgram, "Ambient");
+	
 
 	if (matTemp->getDiffuseMap()>0)
 		currentDiffuseMap = matTemp->getDiffuseMap();
@@ -94,9 +95,10 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 	glUniform4fv(AmbientLocation, 1, value_ptr(light->getAmbientLightColour()));
 	glUniform4fv(EyePosWLocation, 1, value_ptr(camera->getCameraPos()));
 	glUniform4fv(MaterialEmissiveLocation, 1, value_ptr(vec4(0.0f)));
-	glUniform4fv(MaterialDiffuseLocation, 1, value_ptr(vec4(1.0f)));
+	glUniform4fv(MaterialDiffuseLocation, 1, value_ptr(vec4(0.6f, 0.2f, 0.6f, 1.0f)));
 	glUniform4fv(MaterialSpecularLocation, 1, value_ptr(vec4(1.0f)));
-	glUniform1f(MaterialShininessLocation, 50.0f);
+	glUniform1f(MaterialShininessLocation, 5.0f);
+	
 
 	if (currentGameObject->getVertexArrayObject() > 0)
 	{
@@ -111,7 +113,7 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 
 }
 
-/*void createFramebuffer()
+void createFramebuffer()
 {
 	glActiveTexture(GL_TEXTURE6);
 	glGenTextures(1, &FBOTexture);
@@ -188,7 +190,7 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 	//now we can delete the VS & FS Programs
 	glDeleteShader(vertexShaderProgram);
 	glDeleteShader(fragmentShaderProgram);
-}*/
+}
 
 void initScene()
 {
@@ -218,35 +220,55 @@ void initScene()
 
 	skyBox->update();
 
-	//createFramebuffer();
+	createFramebuffer();
 
-	//Object 1 - Teapot
+	//Create various materials
+	string vsPath = ASSET_PATH + SHADER_PATH + "/specularReflectionsVS.glsl";
+	string fsPath = ASSET_PATH + SHADER_PATH + "/specularReflectionsFS.glsl";
+	string texturePath = ASSET_PATH + TEXTURE_PATH + "/texture.png";
+
+	shared_ptr<Material> specularReflectionMaterial = shared_ptr<Material>(new Material);
+	shared_ptr<Material> textureMaterial = shared_ptr<Material>(new Material);
+	shared_ptr<Material> texturedLightMaterial = shared_ptr<Material>(new Material);
+
+
+	//Object 1 - Teapot Specular Reflections
 	string modelPath = ASSET_PATH + MODEL_PATH + "/utah-teapot.fbx";
 	shared_ptr<GameObject> teapot = loadFBXFromFile(modelPath);
-	teapot->setPosition(vec3(10.0, 50.0, 0.0f));
+	teapot->setPosition(vec3(-100.0, 50.0, 0.0f));
 	teapot->setScale(vec3(0.1f, 0.1f, 0.1f));
-	shared_ptr<Material> teapotMaterial = shared_ptr<Material>(new Material);
-	string vsPath = ASSET_PATH + SHADER_PATH + "/lightTextureVS.glsl";
-	string fsPath = ASSET_PATH + SHADER_PATH + "/lightTextureFS.glsl";
-	string texturePath = ASSET_PATH + TEXTURE_PATH + "/texture.png";
-	teapotMaterial->loadShader(vsPath, fsPath);
-	teapotMaterial->loadDiffuseMap(texturePath);
-	teapot->setMaterial(teapotMaterial);
+	specularReflectionMaterial->loadShader(vsPath, fsPath);
+	specularReflectionMaterial->setDiffuseMaterial(vec4(0.5f, 0.0f, 0.0f, 1.0f));
+	teapot->setMaterial(specularReflectionMaterial);
 	gameObjects.push_back(teapot);
 
-	//Object 2 - Armored Car
-	modelPath = ASSET_PATH + MODEL_PATH + "/armoredrecon.fbx";
-	gameObject = loadFBXFromFile(modelPath);
+	//Object 2 - Textured Teapot
+	shared_ptr<GameObject> teapot2 = loadFBXFromFile(modelPath);
+	teapot2->setPosition(vec3(-50.0, 50.0, 0.0));
+	teapot2->setScale(vec3(0.1f, 0.1f, 0.1f));
+	vsPath = ASSET_PATH + SHADER_PATH + "/textureVS.glsl";
+	fsPath = ASSET_PATH + SHADER_PATH + "/textureFS.glsl";
+	textureMaterial->loadShader(vsPath, fsPath);
+	textureMaterial->loadDiffuseMap(texturePath);
+	teapot2->setMaterial(textureMaterial);
+	gameObjects.push_back(teapot2);
+	
+	//Object 3 - Ripple teapot
+	shared_ptr<GameObject> teapot3 = loadFBXFromFile(modelPath);
+	teapot3->setPosition(vec3(0.0, 50.0, 0.0));
+	teapot3->setScale(vec3(0.1f, 0.1f, 0.1f));
 	vsPath = ASSET_PATH + SHADER_PATH + "/lightTextureVS.glsl";
 	fsPath = ASSET_PATH + SHADER_PATH + "/lightTextureFS.glsl";
-	gameObject->loadShader(vsPath, fsPath);
-	gameObject->loadDiffuseMap(texturePath);
-	gameObject->setPosition(vec3(0.0f, 0.0f, 0.0f));
-	gameObjects.push_back(gameObject);
+	texturedLightMaterial->loadShader(vsPath, fsPath);
+	texturedLightMaterial->loadDiffuseMap(texturePath);
+	teapot3->setMaterial(texturedLightMaterial);
+	gameObjects.push_back(teapot3);
+
+
 
 }
 
-/*void cleanUpFramebuffer()
+void cleanUpFramebuffer()
 {
 	glDeleteProgram(fullScreenShaderProgram);
 	glDeleteBuffers(1, &fullScreenVBO);
@@ -254,11 +276,11 @@ void initScene()
 	glDeleteFramebuffers(1, &frameBufferObject);
 	glDeleteRenderbuffers(1, &FBODepthBuffer);
 	glDeleteTextures(1, &FBOTexture);
-}*/
+}
 
 void cleanUp()
 {
-	//cleanUpFramebuffer();
+	cleanUpFramebuffer();
 	gameObjects.clear();
 }
 
@@ -270,7 +292,7 @@ void update()
 	totalTime += elapsedTime;
 
 
-	camera->setCamPos(vec3(4.0f, 2.0f, 10.0f));
+	camera->setCamPos(vec3(0.0, 0.0f, 20.0f));
 	camera->onUpdate();
 
 	for (auto iter = gameObjects.begin(); iter != gameObjects.end(); iter++)
@@ -289,19 +311,19 @@ void renderScene()
 	//clear the colour and depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	for (auto iter = gameObjects.begin(); iter != gameObjects.end(); iter++)
-	{
-		renderGameObject((*iter));
-
-	}
 
 	glDepthMask(GL_FALSE);
 	renderGameObject(skyBox);
 	glDepthMask(GL_TRUE);
 
+	for (auto iter = gameObjects.begin(); iter != gameObjects.end(); iter++)
+	{
+		renderGameObject((*iter));
+
+	}
 }
 
-/*void renderPostProcessing()
+void renderPostProcessing()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	//Set the clear colour(background)
@@ -326,12 +348,12 @@ void renderScene()
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-}*/
+}
 
 void render()
 {
 	renderScene();
-	//renderPostProcessing();
+	renderPostProcessing();
 }
 
 int main(int argc, char * arg[])
@@ -347,7 +369,7 @@ int main(int argc, char * arg[])
 
 		return -1;
 	}
-	//
+	
 	int	imageInitFlags = IMG_INIT_JPG | IMG_INIT_PNG;
 	int	returnInitFlags = IMG_Init(imageInitFlags);
 	if (((returnInitFlags)&	(imageInitFlags)) != imageInitFlags)	{
