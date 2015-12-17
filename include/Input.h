@@ -18,6 +18,8 @@ public:
 	}
 private:
 	SDL_Event inputEvent;
+	bool keys[1024];
+	int keyPressed;
 protected:
 };
 

@@ -48,6 +48,11 @@ public:
 		m_FarClip = farClip;
 	};
 
+	void setDeltaTime(Uint32 delta)
+	{
+		m_DeltaTime = delta;
+	}
+
 	vec3& getCamPos()
 	{
 		return m_CameraPosition;
@@ -82,6 +87,7 @@ private:
 	float m_FarClip;
 	float m_CameraSpeed;
 
+	Uint32 m_DeltaTime;
 
 protected:
 

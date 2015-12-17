@@ -3,7 +3,7 @@
 
 Input::Input()
 {
-
+	keyPressed = inputEvent.key.keysym.sym;
 }
 
 Input::~Input()
@@ -13,6 +13,7 @@ Input::~Input()
 
 void Input::inputDetection(shared_ptr<Camera> camera)
 {
+
 	switch (inputEvent.key.keysym.sym)
 	{
 	case SDLK_LEFT:
