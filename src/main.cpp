@@ -59,12 +59,14 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 	light->setUpLight(currentShaderProgram);
 	currentGameObject->setUpGameObjectMaterial();
 
+	//General uniforms
 	GLint MVPLocation = glGetUniformLocation(currentShaderProgram, "MVP");
 	GLint ModelLocation = glGetUniformLocation(currentShaderProgram, "Model");
 	GLint CameraLocation = glGetUniformLocation(currentShaderProgram, "cameraPosition");
 	GLint texture0Location = glGetUniformLocation(currentShaderProgram, "texture0");
 	GLint cubeTextureLocation = glGetUniformLocation(currentShaderProgram, "cubeTexture");
 
+	//Texture/Lighting shader uniforms
 	GLint EyePosWLocation = glGetUniformLocation(currentShaderProgram, "EyePosW");
 	GLint LightPosWLocation = glGetUniformLocation(currentShaderProgram, "LightPosW");
 	GLint LightColorLocation = glGetUniformLocation(currentShaderProgram, "LightColor");
@@ -74,6 +76,9 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 	GLint MaterialShininessLocation = glGetUniformLocation(currentShaderProgram, "MaterialShininess");
 	GLint AmbientLocation = glGetUniformLocation(currentShaderProgram, "Ambient");
 	
+	//Cel shading uniforms
+	GLint toonTextureLocation = glGetUniformLocation(currentShaderProgram, "toonShade");
+	//GLint numberOfColoursLocation = glGetUniformLocation(currentShaderProgram, "numberOfColours");
 
 	if (matTemp->getDiffuseMap()>0)
 		currentDiffuseMap = matTemp->getDiffuseMap();
@@ -84,11 +89,18 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, matTemp->getEnvironmentMap());
 
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, matTemp->getToonMap());
+
+
+
 	glUniformMatrix3fv(CameraLocation, 1, GL_FALSE, value_ptr(camera->getCameraPos()));
 	glUniformMatrix4fv(ModelLocation, 1, GL_FALSE, value_ptr(currentGameObject->getModelMatrix()));
 	glUniformMatrix4fv(MVPLocation, 1, GL_FALSE, value_ptr(MVPMatrix));
 	glUniform1i(texture0Location, 0);
 	glUniform1i(cubeTextureLocation, 1);
+	glUniform1i(toonTextureLocation, 2);
+	//glUniform1f(numberOfColoursLocation, 5);
 
 	glUniform4fv(LightPosWLocation, 1, value_ptr(camera->getCameraPos()));
 	glUniform4fv(LightColorLocation, 1, value_ptr(light->getSpecularLightColour()));
@@ -215,9 +227,7 @@ void initScene()
 	skyBoxMaterial->loadShader(skyVS, skyFS);
 	skyBox = shared_ptr<GameObject>(new GameObject);
 	skyBox->setMesh(skyBoxMesh);
-	
 	skyBox->setMaterial(skyBoxMaterial);
-
 	skyBox->update();
 
 	createFramebuffer();
@@ -230,6 +240,7 @@ void initScene()
 	shared_ptr<Material> specularReflectionMaterial = shared_ptr<Material>(new Material);
 	shared_ptr<Material> textureMaterial = shared_ptr<Material>(new Material);
 	shared_ptr<Material> texturedLightMaterial = shared_ptr<Material>(new Material);
+	shared_ptr<Material> toonShadingMaterial = shared_ptr<Material>(new Material);
 
 
 	//Object 1 - Teapot Specular Reflections
@@ -253,7 +264,7 @@ void initScene()
 	teapot2->setMaterial(textureMaterial);
 	gameObjects.push_back(teapot2);
 	
-	//Object 3 - Ripple teapot
+	//Object 3 - Light/Textured teapot
 	shared_ptr<GameObject> teapot3 = loadFBXFromFile(modelPath);
 	teapot3->setPosition(vec3(0.0, 50.0, 0.0));
 	teapot3->setScale(vec3(0.1f, 0.1f, 0.1f));
@@ -264,7 +275,18 @@ void initScene()
 	teapot3->setMaterial(texturedLightMaterial);
 	gameObjects.push_back(teapot3);
 
-
+	//Object 4 - Toon Shading teapot
+	shared_ptr<GameObject> teapot4 = loadFBXFromFile(modelPath);
+	teapot4->setPosition(vec3(50.0, 50.0, 0.0));
+	teapot4->setScale(vec3(0.1f, 0.1f, 0.1f));
+	vsPath = ASSET_PATH + SHADER_PATH + "/specularVS.glsl";
+	fsPath = ASSET_PATH + SHADER_PATH + "/specularToonFS.glsl";
+	toonShadingMaterial->loadShader(vsPath, fsPath);
+	teapot4->setMaterial(toonShadingMaterial);
+	toonShadingMaterial->setDiffuseMaterial(vec4(0.6f, 0.0f, 0.0f, 1.0f));
+	float textureData[] = { 0, 0, 0, 50, 50, 50, 100, 100, 100, 150, 150, 150, 200, 200, 200, 255, 255, 255 };
+	toonShadingMaterial->loadToonMap(textureData, 6);
+	gameObjects.push_back(teapot4);
 
 }
 

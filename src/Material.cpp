@@ -13,6 +13,7 @@ Material::Material()
 
 	m_DiffuseMap = 0;
 	m_EnvironmentMap = 0;
+	m_ToonShadeMap = 0;
 }
 
 Material::~Material()
@@ -20,6 +21,7 @@ Material::~Material()
 	glDeleteProgram(m_ShaderProgram);
 	glDeleteTextures(1, &m_DiffuseMap);
 	glDeleteTextures(1, &m_EnvironmentMap);
+	glDeleteTextures(1, &m_ToonShadeMap);
 }
 
 void Material::loadShader(const string& vsFilename, const string& fsFilename)
@@ -49,6 +51,15 @@ void Material::loadShader(const string& vsFilename, const string& fsFilename)
 	//now we can delete the VS & FS Programs
 	glDeleteShader(vertexShaderProgram);
 	glDeleteShader(fragmentShaderProgram);
+}
+
+void Material::loadToonMap(float *pData, int width)
+{
+	m_ToonShadeMap = create1DTexture(pData, width);
+	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 }
 
 void Material::loadDiffuseMap(const string& filename)

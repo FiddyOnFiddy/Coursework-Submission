@@ -13,6 +13,7 @@ public:
 	void loadDiffuseMap(const string& filename);
 	void setUpUniforms();
 	void loadSkyBoxTextures(const string& skyBoxRight, const string& skyBoxLeft, const string& skyBoxTop, const string& skyBoxBottom, const string& skyBoxBack, const string& skyBoxFront);
+	void loadToonMap(float *pData, int width);
 
 	GLuint getShaderProgram()
 	{
@@ -68,6 +69,11 @@ public:
 	{
 		m_SpecularPower = specularPower;
 	};
+	
+	GLuint getToonMap()
+	{
+		return m_ToonShadeMap;
+	};
 
 private:
 	GLuint m_ShaderProgram;
@@ -79,6 +85,7 @@ private:
 
 	GLuint m_DiffuseMap;
 	GLuint m_EnvironmentMap;
+	GLuint m_ToonShadeMap;
 
 };
 #endif
