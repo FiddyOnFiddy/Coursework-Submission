@@ -24,7 +24,7 @@ Material::~Material()
 	glDeleteTextures(1, &m_ToonShadeMap);
 }
 
-void Material::loadShader(const string& vsFilename = " ", const string& fsFilename = " ", const string& gsFilename = " ")
+void Material::loadShader(const string& vsFilename, const string& fsFilename, const string& gsFilename)
 {
 	GLuint vertexShaderProgram = 0;
 	vertexShaderProgram = loadShaderFromFile(vsFilename, VERTEX_SHADER);
