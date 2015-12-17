@@ -11,6 +11,7 @@
 #include <Camera.h>
 #include <Light.h>
 #include <Material.h>
+#include "ParticleSystem.h"
 
 
 shared_ptr<GameObject> gameObject = shared_ptr<GameObject>(new GameObject);
@@ -18,6 +19,7 @@ vector <shared_ptr<GameObject>> gameObjects;
 shared_ptr<Camera> camera = shared_ptr<Camera>(new Camera);
 shared_ptr<Light> light = shared_ptr<Light>(new Light);
 shared_ptr<GameObject> skyBox;
+shared_ptr<ParticleSystem> particles;
 
 //matrices
 mat4 MVPMatrix;
@@ -288,6 +290,33 @@ void initScene()
 	toonShadingMaterial->loadToonMap(textureData, 6);
 	gameObjects.push_back(teapot4);
 
+	shared_ptr<Material> particleMaterial = shared_ptr<Material>(new Material);
+	vsPath = ASSET_PATH + SHADER_PATH + "/particleVS.glsl";
+	fsPath = ASSET_PATH + SHADER_PATH + "/particleFS.glsl";
+	string gsPath = ASSET_PATH + SHADER_PATH + "/particleGS.glsl";
+	texturePath = ASSET_PATH + TEXTURE_PATH + "/particle.png";
+	particleMaterial->loadShader(vsPath, fsPath, gsPath);
+	particleMaterial->loadDiffuseMap(texturePath);
+
+	particles = shared_ptr<ParticleSystem>(new ParticleSystem);
+	particles->setMaterial(particleMaterial);
+	//Init a particle desc and pass it in
+	ParticleDesc desc;
+	desc.minPosition = vec3(0.0f, 0.0f, -1.0f);
+	desc.maxPosition = vec3(0.0f, 0.0f, 1.0f);
+	desc.minColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	desc.maxColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	desc.minSize = 5.0f;
+	desc.maxSize = 6.0f;
+	desc.minForce = vec3(-1.0f, 1.0f, -1.0f);
+	desc.maxForce = vec3(1.0f, 2.0f, 1.0f);
+	desc.minMass = 0.1f;
+	desc.maxMass = 0.1f;
+	desc.minLife = 1.0f;
+	desc.maxLife = 2.0f;
+	particles->create(vec3(0.0f, -5.0f, 0.0f), 30, desc);
+
+
 }
 
 void cleanUpFramebuffer()
@@ -321,6 +350,8 @@ void update()
 	{
 		(*iter)->update();
 	}
+
+	particles->update(elapsedTime);
 
 
 }
@@ -375,6 +406,10 @@ void renderPostProcessing()
 void render()
 {
 	renderScene();
+
+	mat4 VP = camera->getProjMatrix() * camera->getViewMatrix();
+	particles->render(VP, currentShaderProgram);
+
 	renderPostProcessing();
 }
 

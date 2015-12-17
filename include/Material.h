@@ -8,8 +8,13 @@ class Material
 public:
 	Material();
 	~Material();
+
+	virtual void bind()
+	{
+		glUseProgram(m_ShaderProgram);
+	};
 	
-	void loadShader(const string& vsFilename, const string& fsFilename);
+	void loadShader(const string& vsFilename = " ", const string& fsFilename = " ", const string& gsFilename = " ");
 	void loadDiffuseMap(const string& filename);
 	void setUpUniforms();
 	void loadSkyBoxTextures(const string& skyBoxRight, const string& skyBoxLeft, const string& skyBoxTop, const string& skyBoxBottom, const string& skyBoxBack, const string& skyBoxFront);
