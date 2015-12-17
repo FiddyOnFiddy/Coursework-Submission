@@ -53,9 +53,9 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 	if (currentGameObject->getShaderProgram() > 0)
 	{
 		currentShaderProgram = currentGameObject->getShaderProgram();
-		glUseProgram(currentShaderProgram);
+		
 	}
-
+	glUseProgram(currentShaderProgram);
 	light->setUpLight(currentShaderProgram);
 	currentGameObject->setUpGameObjectMaterial();
 
@@ -80,9 +80,12 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 	{
 		currentDiffuseMap = gameObject->getDiffuseMap();
 	}
+
+	if (matTemp->getDiffuseMap()>0)
+		currentDiffuseMap = matTemp->getDiffuseMap();
 	
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, currentGameObject->getDiffuseMap());
+	glBindTexture(GL_TEXTURE_2D, currentDiffuseMap);
 
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, matTemp->getEnvironmentMap());
@@ -106,6 +109,11 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 
 	glDrawElements(GL_TRIANGLES, currentGameObject->getNumberOfIndices(), GL_UNSIGNED_INT, 0);
 
+	if (currentGameObject->getVertexArrayObject() > 0){
+		glBindVertexArray(currentGameObject->getVertexArrayObject());
+		glDrawElements(GL_TRIANGLES, currentGameObject->getNumberOfIndices(), GL_UNSIGNED_INT, 0);
+	}
+
 	for (int i = 0; i < currentGameObject->getNumberOfChildren(); i++)
 	{
 		renderGameObject(currentGameObject->getChild(i));
@@ -115,7 +123,7 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 
 /*void createFramebuffer()
 {
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE6);
 	glGenTextures(1, &FBOTexture);
 	glBindTexture(GL_TEXTURE_2D, FBOTexture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -260,9 +268,6 @@ void cleanUp()
 {
 	//cleanUpFramebuffer();
 	gameObjects.clear();
-	gameObject->~GameObject();
-	camera -> ~Camera();
-	light -> ~Light();
 }
 
 void update()
@@ -321,9 +326,9 @@ void renderScene()
 	glUniform1f(timeLocation, totalTime);
 	glUniform2fv(resolutionLocation, 1, value_ptr(resolution));
 
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE6);
 	glBindTexture(GL_TEXTURE_2D, FBOTexture);
-	glUniform1i(textureLocation, 0);
+	glUniform1i(textureLocation, 6);
 
 	glBindVertexArray(fullScreenVAO);
 
