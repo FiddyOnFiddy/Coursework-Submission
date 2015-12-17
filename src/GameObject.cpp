@@ -21,6 +21,8 @@ GameObject::GameObject()
 GameObject::~GameObject()
 {
 	m_ChildGameObjects.clear();
+	m_Material->~Material();
+	m_Mesh->~Mesh();
 }
 
 void GameObject::update()
@@ -52,7 +54,6 @@ void GameObject::createBuffer(Vertex *pVerts, int numVerts, int *pIndices, int n
 
 void GameObject::loadShader(const string& vsFilename, const string& fsFilename)
 {
-	m_Material = shared_ptr<Material>(new Material);
 	m_Material->loadShader(vsFilename, fsFilename);
 }
 
@@ -63,6 +64,5 @@ void GameObject::setUpGameObjectMaterial()
 
 void GameObject::loadDiffuseMap(const string& filename)
 {
-	m_Material = shared_ptr<Material>(new Material);
 	m_Material->loadDiffuseMap(filename);
 }

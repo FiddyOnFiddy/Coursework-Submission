@@ -18,6 +18,7 @@ vector <shared_ptr<GameObject>> gameObjects;
 shared_ptr<Camera> camera = shared_ptr<Camera>(new Camera);
 shared_ptr<Light> light = shared_ptr<Light>(new Light);
 shared_ptr<Input> input = shared_ptr<Input>(new Input);
+shared_ptr<GameObject> skyBox;
 
 //matrices
 mat4 MVPMatrix;
@@ -35,29 +36,64 @@ const int FRAME_BUFFER_HEIGHT = 480;
 int frames = 0;
 
 GLuint currentShaderProgram = 0;
+GLuint currentDiffuseMap = 0;
 
+//Ripple Shader variables
+vec2 resolution = vec2(FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
+
+//timing
+unsigned int lastTicks, currentTicks;
+float elapsedTime;
+float totalTime;
 
 void renderGameObject(shared_ptr<GameObject> currentGameObject)
 {
+
+	shared_ptr<Material> matTemp = currentGameObject->getMaterial();
 
 	MVPMatrix = camera->getProjMatrix() * camera->getViewMatrix() * currentGameObject->getModelMatrix();
 
 	if (currentGameObject->getShaderProgram() > 0)
 	{
 		currentShaderProgram = currentGameObject->getShaderProgram();
-		glUseProgram(currentShaderProgram);
+		
 	}
-
+	glUseProgram(currentShaderProgram);
 	light->setUpLight(currentShaderProgram);
 	currentGameObject->setUpGameObjectMaterial();
 
-
 	GLint MVPLocation = glGetUniformLocation(currentShaderProgram, "MVP");
+
+	GLint ModelLocation = glGetUniformLocation(currentShaderProgram, "Model");
+
+	GLint CameraLocation = glGetUniformLocation(currentShaderProgram, "cameraPosition");
+
+	GLint texture0Location = glGetUniformLocation(currentShaderProgram, "texture0");
+	
+	GLint cubeTextureLocation = glGetUniformLocation(currentShaderProgram, "cubeTexture");
+
+
+	if (matTemp->getDiffuseMap()>0)
+		currentDiffuseMap = matTemp->getDiffuseMap();
+
+	
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, currentDiffuseMap);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, matTemp->getEnvironmentMap());
+
+	glUniformMatrix3fv(CameraLocation, 1, GL_FALSE, value_ptr(camera->getCameraPos()));
+	glUniformMatrix4fv(ModelLocation, 1, GL_FALSE, value_ptr(currentGameObject->getModelMatrix()));
 	glUniformMatrix4fv(MVPLocation, 1, GL_FALSE, value_ptr(MVPMatrix));
+	glUniform1i(texture0Location, 0);
+	glUniform1i(cubeTextureLocation, 1);
 
-	glBindVertexArray(currentGameObject->getVertexArrayObject());
 
-	glDrawElements(GL_TRIANGLES, currentGameObject->getNumberOfIndices(), GL_UNSIGNED_INT, 0);
+	if (currentGameObject->getVertexArrayObject() > 0){
+		glBindVertexArray(currentGameObject->getVertexArrayObject());
+		glDrawElements(GL_TRIANGLES, currentGameObject->getNumberOfIndices(), GL_UNSIGNED_INT, 0);
+	}
 
 	for (int i = 0; i < currentGameObject->getNumberOfChildren(); i++)
 	{
@@ -68,7 +104,7 @@ void renderGameObject(shared_ptr<GameObject> currentGameObject)
 
 void createFramebuffer()
 {
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE6);
 	glGenTextures(1, &FBOTexture);
 	glBindTexture(GL_TEXTURE_2D, FBOTexture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -124,7 +160,7 @@ void createFramebuffer()
 	checkForCompilerErrors(vertexShaderProgram);
 
 	GLuint fragmentShaderProgram = 0;
-	string fsPath = ASSET_PATH + SHADER_PATH + "/colourFilterFS.glsl";
+	string fsPath = ASSET_PATH + SHADER_PATH + "/simplePostProcessFS.glsl";
 	fragmentShaderProgram = loadShaderFromFile(fsPath, FRAGMENT_SHADER);
 	checkForCompilerErrors(fragmentShaderProgram);
 
@@ -134,6 +170,9 @@ void createFramebuffer()
 
 	//Link attributes
 	glBindAttribLocation(fullScreenShaderProgram, 0, "vertexPosition");
+	glBindAttribLocation(fullScreenShaderProgram, 1, "vertexColour");
+	glBindAttribLocation(fullScreenShaderProgram, 2, "vertexTexCoords");
+	glBindAttribLocation(fullScreenShaderProgram, 3, "vertexNormal");
 
 	glLinkProgram(fullScreenShaderProgram);
 	checkForLinkErrors(fullScreenShaderProgram);
@@ -144,18 +183,46 @@ void createFramebuffer()
 
 void initScene()
 {
+	currentTicks = SDL_GetTicks();
+	totalTime = 0.0f;
+
+	//Creating Skybox
+	shared_ptr<Mesh> skyBoxMesh = shared_ptr<Mesh>(new Mesh);
+	skyBoxMesh->create(cubeVerts, numberOfCubeVerts, cubeIndices, numberOfCubeIndices);
+
+	shared_ptr<Material> skyBoxMaterial = shared_ptr<Material>(new Material);
+	string skyBoxFront = ASSET_PATH + TEXTURE_PATH + "/Skybox/TropicalSunnyDayFront2048.png";
+	string skyBoxBack = ASSET_PATH + TEXTURE_PATH + "/Skybox/TropicalSunnyDayBack2048.png";
+	string skyBoxLeft = ASSET_PATH + TEXTURE_PATH + "/Skybox/TropicalSunnyDayLeft2048.png";
+	string skyBoxRight = ASSET_PATH + TEXTURE_PATH + "/Skybox/TropicalSunnyDayRight2048.png";
+	string skyBoxTop = ASSET_PATH + TEXTURE_PATH + "/Skybox/TropicalSunnyDayUp2048.png";
+	string skyBoxBottom = ASSET_PATH + TEXTURE_PATH + "/Skybox/TropicalSunnyDayDown2048.png";
+	skyBoxMaterial->loadSkyBoxTextures(skyBoxRight, skyBoxLeft, skyBoxTop, skyBoxBottom, skyBoxBack, skyBoxFront);
+
+	string skyVS = ASSET_PATH + SHADER_PATH + "/skyVS.glsl";
+	string skyFS = ASSET_PATH + SHADER_PATH + "/skyFS.glsl";
+	skyBoxMaterial->loadShader(skyVS, skyFS);
+	skyBox = shared_ptr<GameObject>(new GameObject);
+	skyBox->setMesh(skyBoxMesh);
+	skyBox->setMaterial(skyBoxMaterial);
+
+	skyBox->update();
 
 	createFramebuffer();
 
 	//Object 1 - Teapot
 	string modelPath = ASSET_PATH + MODEL_PATH + "/utah-teapot.fbx";
-	gameObject = loadFBXFromFile(modelPath);
-	string vsPath = ASSET_PATH + SHADER_PATH + "/simpleVS.glsl";
-	string fsPath = ASSET_PATH + SHADER_PATH + "/simpleFS.glsl";
-	gameObject->loadShader(vsPath, fsPath);
-	gameObject->setPosition(vec3(10.0, 50.0, 0.0f));
-	gameObject->setScale(vec3(0.1f, 0.1f, 0.1f));
-	gameObjects.push_back(gameObject);
+	shared_ptr<GameObject> teapot = loadFBXFromFile(modelPath);
+	teapot->setPosition(vec3(10.0, 50.0, 0.0f));
+	teapot->setScale(vec3(0.1f, 0.1f, 0.1f));
+	shared_ptr<Material> teapotMaterial = shared_ptr<Material>(new Material);
+	string vsPath = ASSET_PATH + SHADER_PATH + "/textureVS.glsl";
+	string fsPath = ASSET_PATH + SHADER_PATH + "/textureFS.glsl";
+	string texturePath = ASSET_PATH + TEXTURE_PATH + "/texture.png";
+	teapotMaterial->loadShader(vsPath, fsPath);
+	teapotMaterial->loadDiffuseMap(texturePath);
+	teapot->setMaterial(teapotMaterial);
+	gameObjects.push_back(teapot);
 
 	//Object 2 - Armored Car
 	modelPath = ASSET_PATH + MODEL_PATH + "/armoredrecon.fbx";
@@ -182,14 +249,18 @@ void cleanUp()
 {
 	cleanUpFramebuffer();
 	gameObjects.clear();
-	gameObject->~GameObject();
-	camera -> ~Camera();
-	light -> ~Light();
-	input -> ~Input();
+
 }
 
 void update()
 {
+	lastTicks = currentTicks;
+	currentTicks = SDL_GetTicks();
+	elapsedTime = (currentTicks - lastTicks) / 1000.0f;
+	totalTime += elapsedTime;
+
+
+	camera->setCamPos(vec3(4.0f, 2.0f, 10.0f));
 	camera->onUpdate();
 
 	for (auto iter = gameObjects.begin(); iter != gameObjects.end(); iter++)
@@ -214,6 +285,9 @@ void renderScene()
 
 	}
 
+	glDepthMask(GL_FALSE);
+	renderGameObject(skyBox);
+	glDepthMask(GL_TRUE);
 
 }
 
@@ -228,10 +302,15 @@ void renderPostProcessing()
 	glUseProgram(fullScreenShaderProgram);
 
 	GLint textureLocation = glGetUniformLocation(fullScreenShaderProgram, "texture0");
+	GLint timeLocation = glGetUniformLocation(fullScreenShaderProgram, "time");
+	GLint resolutionLocation = glGetUniformLocation(fullScreenShaderProgram, "resolution");
 
-	glActiveTexture(GL_TEXTURE0);
+	glUniform1f(timeLocation, totalTime);
+	glUniform2fv(resolutionLocation, 1, value_ptr(resolution));
+
+	glActiveTexture(GL_TEXTURE6);
 	glBindTexture(GL_TEXTURE_2D, FBOTexture);
-	glUniform1i(textureLocation, 0);
+	glUniform1i(textureLocation, 6);
 
 	glBindVertexArray(fullScreenVAO);
 

@@ -109,6 +109,25 @@ public:
 		return m_Material->getDiffuseMap();
 	};
 
+	GLuint getEnvironmentMap()
+	{
+		return m_Material->getEnvironmentMap();
+	};
+
+	void setMaterial(shared_ptr<Material> material)
+	{
+		m_Material = material;
+	};
+
+	shared_ptr<Material> getMaterial()
+	{
+		return m_Material;
+	}
+	void setMesh(shared_ptr<Mesh> mesh)
+	{
+		m_Mesh = mesh;
+	};
+
 private:
 	mat4 m_ModelMatrix;
 	vec3 m_Position;

@@ -12,6 +12,7 @@ public:
 	void loadShader(const string& vsFilename, const string& fsFilename);
 	void loadDiffuseMap(const string& filename);
 	void setUpUniforms();
+	void loadSkyBoxTextures(const string& skyBoxRight, const string& skyBoxLeft, const string& skyBoxTop, const string& skyBoxBottom, const string& skyBoxBack, const string& skyBoxFront);
 
 	GLuint getShaderProgram()
 	{
@@ -43,6 +44,31 @@ public:
 		return m_DiffuseMap;
 	};
 
+	GLuint getEnvironmentMap()
+	{
+		return m_EnvironmentMap;
+	};
+
+	void setAmbientMaterial(vec4& ambientMatieal)
+	{
+		m_AmbientMaterial = ambientMatieal;
+	};
+
+	void setDiffuseMaterial(vec4& diffuseMaterial)
+	{
+		m_DiffuseMaterial = diffuseMaterial;
+	};
+
+	void setSpecularMaterial(vec4& specularMaterial)
+	{
+		m_SpecularMaterial = specularMaterial;
+	};
+
+	void setSpecularPower(float specularPower)
+	{
+		m_SpecularPower = specularPower;
+	};
+
 private:
 	GLuint m_ShaderProgram;
 
@@ -52,6 +78,7 @@ private:
 	float m_SpecularPower;
 
 	GLuint m_DiffuseMap;
+	GLuint m_EnvironmentMap;
 
 };
 #endif
