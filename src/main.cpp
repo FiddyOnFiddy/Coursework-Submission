@@ -235,14 +235,15 @@ void initScene()
 	createFramebuffer();
 
 	//Create various materials
-	string vsPath = ASSET_PATH + SHADER_PATH + "/specularReflectionsVS.glsl";
-	string fsPath = ASSET_PATH + SHADER_PATH + "/specularReflectionsFS.glsl";
+	string vsPath = ASSET_PATH + SHADER_PATH + "/specularVS.glsl";
+	string fsPath = ASSET_PATH + SHADER_PATH + "/specularFS.glsl";
 	string texturePath = ASSET_PATH + TEXTURE_PATH + "/texture.png";
 
-	shared_ptr<Material> specularReflectionMaterial = shared_ptr<Material>(new Material);
+	shared_ptr<Material> specularMaterial = shared_ptr<Material>(new Material);
 	shared_ptr<Material> textureMaterial = shared_ptr<Material>(new Material);
 	shared_ptr<Material> texturedLightMaterial = shared_ptr<Material>(new Material);
 	shared_ptr<Material> toonShadingMaterial = shared_ptr<Material>(new Material);
+
 
 
 	//Object 1 - Teapot Specular Reflections
@@ -250,9 +251,9 @@ void initScene()
 	shared_ptr<GameObject> teapot = loadFBXFromFile(modelPath);
 	teapot->setPosition(vec3(-80.0, 50.0, 0.0f));
 	teapot->setScale(vec3(0.1f, 0.1f, 0.1f));
-	specularReflectionMaterial->loadShader(vsPath, fsPath);
-	specularReflectionMaterial->setDiffuseMaterial(vec4(0.5f, 0.0f, 0.0f, 1.0f));
-	teapot->setMaterial(specularReflectionMaterial);
+	specularMaterial->loadShader(vsPath, fsPath);
+	specularMaterial->setDiffuseMaterial(vec4(0.5f, 0.0f, 0.0f, 1.0f));
+	teapot->setMaterial(specularMaterial);
 	gameObjects.push_back(teapot);
 
 	//Object 2 - Textured Teapot
@@ -290,6 +291,8 @@ void initScene()
 	toonShadingMaterial->loadToonMap(textureData, 6);
 	gameObjects.push_back(teapot4);
 
+
+	//Particle System
 	shared_ptr<Material> particleMaterial = shared_ptr<Material>(new Material);
 	vsPath = ASSET_PATH + SHADER_PATH + "/particleVS.glsl";
 	fsPath = ASSET_PATH + SHADER_PATH + "/particleFS.glsl";
