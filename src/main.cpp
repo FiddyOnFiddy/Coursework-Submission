@@ -306,8 +306,8 @@ void initScene()
 	desc.maxPosition = vec3(0.0f, 0.0f, 1.0f);
 	desc.minColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	desc.maxColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	desc.minSize = 5.0f;
-	desc.maxSize = 6.0f;
+	desc.minSize = 1.0f;
+	desc.maxSize = 3.0f;
 	desc.minForce = vec3(-1.0f, 1.0f, -1.0f);
 	desc.maxForce = vec3(1.0f, 2.0f, 1.0f);
 	desc.minMass = 0.1f;
