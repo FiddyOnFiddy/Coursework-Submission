@@ -3,7 +3,8 @@ GP2BaseCode
 
 Branches worked on:
 
-Matthew's Branch - This is the final branch with all my work put together
+Matthew's Branch
+================ - This is the final branch with all my work put together
 
 First Component Branch - I started the component system
 
