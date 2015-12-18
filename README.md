@@ -1,13 +1,13 @@
 GP2BaseCode
 ===========
 
-Group Members
+**Group Members: **
 
-Matthew Biggins - S1316320
-Jordan Coyle - S1311778
-
-
+**Matthew Biggins** - S1316320
+**Jordan Coyle** - S1311778
 
 
-Controls: Arrow keys to move the camera
+
+
+**Controls:** Arrow keys to move the camera
 
