@@ -235,7 +235,7 @@ void initScene()
 	createFramebuffer();
 
 	//Create various materials
-	string vsPath = ASSET_PATH + SHADER_PATH + "/specularReflectionsVS.glsl";
+	string vsPath = ASSET_PATH + SHADER_PATH + "/specularReflectionsS.glsl";
 	string fsPath = ASSET_PATH + SHADER_PATH + "/specularReflectionsFS.glsl";
 	string texturePath = ASSET_PATH + TEXTURE_PATH + "/texture.png";
 
@@ -314,7 +314,7 @@ void initScene()
 	desc.maxMass = 0.1f;
 	desc.minLife = 1.0f;
 	desc.maxLife = 2.0f;
-	particles->create(vec3(0.0f, -5.0f, 0.0f), 30, desc);
+	particles->create(vec3(0.0f, -5.0f, 0.0f), 1000, desc);
 
 
 }
