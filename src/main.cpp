@@ -214,10 +214,12 @@ void createFramebuffer()
 
 void initScene()
 {
+	camera->setCamPos(vec3(0.0, 0.0f, 20.0f));
+
 	currentTicks = SDL_GetTicks();
 	totalTime = 0.0f;
 
-	SDL_SetRelativeMouseMode(SDL_TRUE);
+	//SDL_SetRelativeMouseMode(SDL_TRUE);
 
 	//Creating Skybox
 	shared_ptr<Mesh> skyBoxMesh = shared_ptr<Mesh>(new Mesh);
@@ -359,7 +361,6 @@ void update()
 	totalTime += elapsedTime;
 
 
-	camera->setCamPos(vec3(0.0, 0.0f, 20.0f));
 	camera->onUpdate();
 
 	for (auto iter = gameObjects.begin(); iter != gameObjects.end(); iter++)
