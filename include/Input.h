@@ -11,15 +11,27 @@ public:
 	~Input();
 
 	void inputDetection(shared_ptr<Camera> camera);
+	void mouseControl(shared_ptr<Camera> camera);
 
 	void setInputEvent(SDL_Event tempEvent)
 	{
 		inputEvent = tempEvent;
 	}
+
 private:
 	SDL_Event inputEvent;
-	bool keys[1024];
-	int keyPressed;
+	const Uint8* keyState;
+	GLfloat sensitivity;
+
+	GLfloat xOffset;
+	GLfloat yOffset;
+	GLfloat yaw;
+	GLfloat pitch;
+
+	bool first;
+
+	vec3 front;
+
 protected:
 };
 

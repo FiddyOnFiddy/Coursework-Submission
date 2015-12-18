@@ -53,6 +53,11 @@ public:
 		m_DeltaTime = delta;
 	}
 
+	void setCameraFront(vec3 front)
+	{
+		m_CameraFront = front;
+	}
+
 	vec3& getCamPos()
 	{
 		return m_CameraPosition;

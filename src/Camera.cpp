@@ -9,12 +9,11 @@ Camera::Camera()
 	m_CameraPosition = vec3(0.0f, 0.0f, 10.0f);
 	m_CameraFront = vec3(0.0f, 0.0f, -1.0f);
 	m_CameraLook = vec3(0.0f, 0.0f, 0.0f);
-	m_CameraSpeed = 0.1f * m_DeltaTime;
+	m_CameraSpeed = 5.0f * m_DeltaTime;
 	m_AspectRatio = 640.0f / 480.0f;
 	m_FOV = 45.0f;
 	m_NearClip = 0.1f;
 	m_FarClip = 100.0f;
-	m_DeltaTime = 0;
 }
 
 Camera::~Camera()

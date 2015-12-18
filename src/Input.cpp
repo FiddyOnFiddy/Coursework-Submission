@@ -3,7 +3,8 @@
 
 Input::Input()
 {
-	keyPressed = inputEvent.key.keysym.sym;
+	sensitivity = 0.00002f;
+	first = true;
 }
 
 Input::~Input()
@@ -11,32 +12,62 @@ Input::~Input()
 
 }
 
+void Input::mouseControl(shared_ptr<Camera> camera)
+{
+	xOffset = inputEvent.motion.xrel;
+	yOffset = inputEvent.motion.yrel;
+
+	if (first)
+	{
+		xOffset = inputEvent.motion.x;
+		yOffset = inputEvent.motion.y;
+		first = false;
+	}
+
+	xOffset *= sensitivity;
+	yOffset *= sensitivity;
+
+	yaw += xOffset;
+	pitch += yOffset;
+
+	if (pitch > 89.0f)
+	{
+		pitch = 89.0f;
+	}
+	if (pitch < -89.0f)
+	{
+		pitch = -89.0f;
+	}
+
+	front.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
+	front.y = sin(glm::radians(pitch));
+	front.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
+	camera->setCameraFront(glm::normalize(front));
+
+}
+
 void Input::inputDetection(shared_ptr<Camera> camera)
 {
+	keyState = SDL_GetKeyboardState(NULL);
 
-	switch (inputEvent.key.keysym.sym)
+	if (keyState[SDL_SCANCODE_UP])
 	{
-	case SDLK_LEFT:
-		camera->moveLeft();
-		cout << "left" << endl;
-		break;
-	case SDLK_RIGHT:
-		camera->moveRight();
-		cout << "right" << endl;
-		break;
-	case SDLK_UP:
 		camera->moveForward();
 		cout << "up" << endl;
-		break;
-	case SDLK_DOWN:
+	}
+	if (keyState[SDL_SCANCODE_DOWN])
+	{
 		camera->moveBackward();
 		cout << "down" << endl;
-		break;
-	case SDLK_c:
-		camera->setCamPos(vec3(5.0f, 5.0f, 5.0f));
-		camera->setCamLook(vec3(0.0f, 0.0f, 0.0f));
-		cout << "Camera Change" << endl;
-	default:
-		break;
+	}
+	if (keyState[SDL_SCANCODE_LEFT])
+	{
+		camera->moveLeft();
+		cout << "left" << endl;
+	}
+	if (keyState[SDL_SCANCODE_RIGHT])
+	{
+		camera->moveRight();
+		cout << "right" << endl;
 	}
 }

@@ -30,9 +30,12 @@ GLuint frameBufferObject;
 GLuint fullScreenVAO;
 GLuint fullScreenVBO;
 GLuint fullScreenShaderProgram;
+GLuint fontTextureMap;
+
 const int FRAME_BUFFER_WIDTH = 640;
 const int FRAME_BUFFER_HEIGHT = 480;
 
+double fps;
 int frames = 0;
 
 GLuint currentShaderProgram = 0;
@@ -186,6 +189,8 @@ void initScene()
 	currentTicks = SDL_GetTicks();
 	totalTime = 0.0f;
 
+	SDL_SetRelativeMouseMode(SDL_TRUE);
+
 	//Creating Skybox
 	shared_ptr<Mesh> skyBoxMesh = shared_ptr<Mesh>(new Mesh);
 	skyBoxMesh->create(cubeVerts, numberOfCubeVerts, cubeIndices, numberOfCubeIndices);
@@ -233,7 +238,11 @@ void initScene()
 	gameObject->setPosition(vec3(0.0f, 0.0f, 0.0f));
 	gameObjects.push_back(gameObject);
 
+	//string fontPath = ASSET_PATH + FONT_PATH + "OratorStd.otf";
+	//fontTextureMap = loadTextureFromFont(fontPath, 18, (string**)fps + "FPS");
+
 }
+
 
 void cleanUpFramebuffer()
 {
@@ -259,8 +268,6 @@ void update()
 	elapsedTime = (currentTicks - lastTicks) / 1000.0f;
 	totalTime += elapsedTime;
 
-
-	camera->setCamPos(vec3(4.0f, 2.0f, 10.0f));
 	camera->onUpdate();
 
 	for (auto iter = gameObjects.begin(); iter != gameObjects.end(); iter++)
@@ -386,13 +393,9 @@ int main(int argc, char * arg[])
 		frames++;
 
 		camera->setDeltaTime(deltaTime);
-		
-		if (deltaTime > 1)
-		{
-			printf("%f ms/frames\n", 1000.0 / double(frames));
-			frames = 0;
-			currentTime = newTime;
-		}
+
+		fps = (frames / (double)deltaTime) * 1000;
+		printf("%f FPS\n", fps);
 
 		//While we still have events in the queue
 		while (SDL_PollEvent(&event))
@@ -408,6 +411,11 @@ int main(int argc, char * arg[])
 				input->setInputEvent(event);
 				input->inputDetection(camera);
 			}
+			if (event.type == SDL_MOUSEMOTION)
+			{
+				input->mouseControl(camera);
+			}
+	
 		}
 		//init Scene
 		update();
