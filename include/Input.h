@@ -11,7 +11,7 @@ public:
 	~Input();
 
 	void inputDetection(shared_ptr<Camera> camera);
-	void mouseControl(shared_ptr<Camera> camera);
+	void mouseControl(shared_ptr<Camera> camera, GLfloat x, GLfloat y);
 
 	void setInputEvent(SDL_Event tempEvent)
 	{
@@ -27,6 +27,8 @@ private:
 	GLfloat yOffset;
 	GLfloat yaw;
 	GLfloat pitch;
+	GLfloat initX;
+	GLfloat initY;
 
 	bool first;
 

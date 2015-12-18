@@ -3,7 +3,9 @@
 
 Input::Input()
 {
-	sensitivity = 0.00002f;
+	initX = 320;
+	initY = 240;
+	sensitivity = 0.02f;
 	first = true;
 }
 
@@ -12,17 +14,22 @@ Input::~Input()
 
 }
 
-void Input::mouseControl(shared_ptr<Camera> camera)
+void Input::mouseControl(shared_ptr<Camera> camera, GLfloat x, GLfloat y)
 {
-	xOffset = inputEvent.motion.xrel;
-	yOffset = inputEvent.motion.yrel;
+	//xOffset = inputEvent.motion.xrel;
+	//yOffset = inputEvent.motion.yrel;
 
 	if (first)
 	{
-		xOffset = inputEvent.motion.x;
-		yOffset = inputEvent.motion.y;
+		initX = x;
+		initY = y;
 		first = false;
 	}
+
+	xOffset = x - initX;
+	yOffset = initY - y;
+	initX = x;
+	initY = y;
 
 	xOffset *= sensitivity;
 	yOffset *= sensitivity;
@@ -39,9 +46,9 @@ void Input::mouseControl(shared_ptr<Camera> camera)
 		pitch = -89.0f;
 	}
 
-	front.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
-	front.y = sin(glm::radians(pitch));
-	front.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
+	front.x = cos(radians(pitch)) * cos(radians(yaw));
+	front.y = sin(radians(pitch));
+	front.z = cos(radians(pitch)) * sin(radians(yaw));
 	camera->setCameraFront(glm::normalize(front));
 
 }
@@ -69,5 +76,11 @@ void Input::inputDetection(shared_ptr<Camera> camera)
 	{
 		camera->moveRight();
 		cout << "right" << endl;
+	}
+	if (keyState[SDL_SCANCODE_C])
+	{
+		camera->setCamPos(vec3(0.0f, 0.0f, 10.0f));
+		camera->setCamLook(vec3(0.0f, 0.0f, 0.0f));
+		cout << "Camera Change" << endl;
 	}
 }

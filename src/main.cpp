@@ -392,8 +392,6 @@ int main(int argc, char * arg[])
 		Uint32 deltaTime = newTime - currentTime;
 		frames++;
 
-		camera->setDeltaTime(deltaTime);
-
 		fps = (frames / (double)deltaTime) * 1000;
 		printf("%f FPS\n", fps);
 
@@ -413,7 +411,9 @@ int main(int argc, char * arg[])
 			}
 			if (event.type == SDL_MOUSEMOTION)
 			{
-				input->mouseControl(camera);
+				int x, y;
+				SDL_GetMouseState(&x, &y);
+				//input->mouseControl(camera, x, y);
 			}
 	
 		}

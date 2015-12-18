@@ -48,11 +48,6 @@ public:
 		m_FarClip = farClip;
 	};
 
-	void setDeltaTime(Uint32 delta)
-	{
-		m_DeltaTime = delta;
-	}
-
 	void setCameraFront(vec3 front)
 	{
 		m_CameraFront = front;
@@ -96,8 +91,6 @@ private:
 	float m_NearClip;
 	float m_FarClip;
 	float m_CameraSpeed;
-
-	Uint32 m_DeltaTime;
 
 protected:
 
