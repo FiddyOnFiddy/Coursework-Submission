@@ -24,7 +24,7 @@ Material::~Material()
 	glDeleteTextures(1, &m_ToonShadeMap);
 }
 
-void Material::loadShader(const string& vsFilename, const string& fsFilename)
+void Material::loadShader(const string& vsFilename, const string& fsFilename, const string& gsFilename)
 {
 	GLuint vertexShaderProgram = 0;
 	vertexShaderProgram = loadShaderFromFile(vsFilename, VERTEX_SHADER);
@@ -34,9 +34,14 @@ void Material::loadShader(const string& vsFilename, const string& fsFilename)
 	fragmentShaderProgram = loadShaderFromFile(fsFilename, FRAGMENT_SHADER);
 	checkForCompilerErrors(fragmentShaderProgram);
 
+	GLuint geomShaderProgram = 0;
+	fragmentShaderProgram = loadShaderFromFile(gsFilename, GEOMETRY_SHADER);
+	checkForCompilerErrors(fragmentShaderProgram);
+
 	m_ShaderProgram = glCreateProgram();
 	glAttachShader(m_ShaderProgram, vertexShaderProgram);
 	glAttachShader(m_ShaderProgram, fragmentShaderProgram);
+	glAttachShader(m_ShaderProgram, geomShaderProgram);
 
 	//Link attributes
 	glBindAttribLocation(m_ShaderProgram, 0, "vertexPosition");
