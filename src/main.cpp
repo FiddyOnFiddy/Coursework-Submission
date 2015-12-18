@@ -248,7 +248,7 @@ void initScene()
 	//Object 1 - Teapot Specular Reflections
 	string modelPath = ASSET_PATH + MODEL_PATH + "/utah-teapot.fbx";
 	shared_ptr<GameObject> teapot = loadFBXFromFile(modelPath);
-	teapot->setPosition(vec3(-100.0, 50.0, 0.0f));
+	teapot->setPosition(vec3(-80.0, 50.0, 0.0f));
 	teapot->setScale(vec3(0.1f, 0.1f, 0.1f));
 	specularReflectionMaterial->loadShader(vsPath, fsPath);
 	specularReflectionMaterial->setDiffuseMaterial(vec4(0.5f, 0.0f, 0.0f, 1.0f));
@@ -257,7 +257,7 @@ void initScene()
 
 	//Object 2 - Textured Teapot
 	shared_ptr<GameObject> teapot2 = loadFBXFromFile(modelPath);
-	teapot2->setPosition(vec3(-50.0, 50.0, 0.0));
+	teapot2->setPosition(vec3(-30.0, 50.0, 0.0));
 	teapot2->setScale(vec3(0.1f, 0.1f, 0.1f));
 	vsPath = ASSET_PATH + SHADER_PATH + "/textureVS.glsl";
 	fsPath = ASSET_PATH + SHADER_PATH + "/textureFS.glsl";
@@ -268,7 +268,7 @@ void initScene()
 	
 	//Object 3 - Light/Textured teapot
 	shared_ptr<GameObject> teapot3 = loadFBXFromFile(modelPath);
-	teapot3->setPosition(vec3(0.0, 50.0, 0.0));
+	teapot3->setPosition(vec3(20.0, 50.0, 0.0));
 	teapot3->setScale(vec3(0.1f, 0.1f, 0.1f));
 	vsPath = ASSET_PATH + SHADER_PATH + "/lightTextureVS.glsl";
 	fsPath = ASSET_PATH + SHADER_PATH + "/lightTextureFS.glsl";
@@ -279,13 +279,13 @@ void initScene()
 
 	//Object 4 - Toon Shading teapot
 	shared_ptr<GameObject> teapot4 = loadFBXFromFile(modelPath);
-	teapot4->setPosition(vec3(50.0, 50.0, 0.0));
+	teapot4->setPosition(vec3(70.0, 50.0, 0.0));
 	teapot4->setScale(vec3(0.1f, 0.1f, 0.1f));
 	vsPath = ASSET_PATH + SHADER_PATH + "/specularVS.glsl";
 	fsPath = ASSET_PATH + SHADER_PATH + "/specularToonFS.glsl";
 	toonShadingMaterial->loadShader(vsPath, fsPath);
 	teapot4->setMaterial(toonShadingMaterial);
-	toonShadingMaterial->setDiffuseMaterial(vec4(0.6f, 0.0f, 0.0f, 1.0f));
+	toonShadingMaterial->setDiffuseMaterial(vec4(0.6f, 0.2f, 0.4f, 1.0f));
 	float textureData[] = { 0, 0, 0, 50, 50, 50, 100, 100, 100, 150, 150, 150, 200, 200, 200, 255, 255, 255 };
 	toonShadingMaterial->loadToonMap(textureData, 6);
 	gameObjects.push_back(teapot4);
@@ -302,19 +302,19 @@ void initScene()
 	particles->setMaterial(particleMaterial);
 	//Init a particle desc and pass it in
 	ParticleDesc desc;
-	desc.minPosition = vec3(0.0f, 0.0f, -1.0f);
-	desc.maxPosition = vec3(0.0f, 0.0f, 1.0f);
-	desc.minColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	desc.minPosition = vec3(-10.0f, 0.0f, -5.0f);
+	desc.maxPosition = vec3(10.0f, 0.0f, 5.0f);
+	desc.minColour = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	desc.maxColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	desc.minSize = 1.0f;
-	desc.maxSize = 3.0f;
+	desc.minSize = 0.2f;
+	desc.maxSize = 1.0f;
 	desc.minForce = vec3(-1.0f, 1.0f, -1.0f);
 	desc.maxForce = vec3(1.0f, 2.0f, 1.0f);
 	desc.minMass = 0.1f;
 	desc.maxMass = 0.1f;
 	desc.minLife = 1.0f;
-	desc.maxLife = 2.0f;
-	particles->create(vec3(0.0f, -5.0f, 0.0f), 30, desc);
+	desc.maxLife = 4.0f;
+	particles->create(vec3(0.0f, -5.0f, -5.0f), 2500, desc);
 
 
 }
